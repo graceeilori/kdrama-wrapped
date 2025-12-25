@@ -3,5 +3,57 @@
 @theme {
   --color-bg-primary: var(--bg-primary);
   --color-text-primary: var(--text-primary);
-  --color-accent: var(--accent);
+
+  --color-primary-10: var(--primary-10);
+  --color-primary-20: var(--primary-20);
+  --color-primary-30: var(--primary-30);
+  --color-primary-40: var(--primary-40);
+  --color-primary-50: var(--primary-50);
+
+  --color-secondary-10: var(--secondary-10);
+  --color-secondary-20: var(--secondary-20);
+  --color-secondary-30: var(--secondary-30);
+
+  --color-accent-10: var(--accent-10);
+  --color-accent-20: var(--accent-20);
+  --color-accent-30: var(--accent-30);
+
+  --color-neutral-10: var(--neutral-10);
+  --color-neutral-20: var(--neutral-20);
+  --color-neutral-30: var(--neutral-30);
+
+  --color-fragment-10: var(--fragment-10);
+  --color-fragment-20: var(--fragment-20);
+  --color-fragment-30: var(--fragment-30);
+  --color-fragment-40: var(--fragment-40);
+  --color-fragment-50: var(--fragment-50);
+  --color-fragment-60: var(--fragment-60);
+
+  --color-stat-10: var(--stat-10);
+  --color-stat-20: var(--stat-20);
+  --color-stat-30: var(--stat-30);
+  --color-stat-40: var(--stat-40);
+  --color-stat-50: var(--stat-50);
+
+  --color-seed-10: var(--seed-10);
+  --color-seed-20: var(--seed-20);
+  --color-seed-30: var(--seed-30);
+  --color-seed-40: var(--seed-40);
+  --color-seed-50: var(--seed-50);
+
+  --color-vibe-10: var(--vibe-10);
+  --color-vibe-20: var(--vibe-20);
+  --color-vibe-30: var(--vibe-30);
+  --color-vibe-40: var(--vibe-40);
+  --color-vibe-50: var(--vibe-50);
+  --color-vibe-60: var(--vibe-60);
+  --color-vibe-70: var(--vibe-70);
+  --color-vibe-80: var(--vibe-80);
+  --color-vibe-90: var(--vibe-90);
+  --color-vibe-100: var(--vibe-100);
+  --color-vibe-110: var(--vibe-110);
+  --color-vibe-120: var(--vibe-120);
+  --color-vibe-130: var(--vibe-130);
+  --color-vibe-140: var(--vibe-140);
+  --color-vibe-150: var(--vibe-150);
 }

@@ -17,7 +17,7 @@ export default function CreatePage() {
                             📝
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold">Let's Get Started</h1>
+                            <h1 className="text-xl font-bold">Let&apos;s Get Started</h1>
                             <p className="text-sm opacity-80">Choose your vibe & input stats</p>
                         </div>
                     </div>
@@ -38,7 +38,7 @@ export default function CreatePage() {
                                         className="aspect-square rounded-md mb-2 shadow-sm"
                                         style={{
                                             backgroundColor: themes[themeKey].colors['--bg-primary'],
-                                            border: `2px solid ${themes[themeKey].colors['--accent']}`
+                                            border: `2px solid ${themes[themeKey].colors['--accent-10']}`
                                         }}
                                     />
                                     <span className="block text-xs text-center font-medium truncate">

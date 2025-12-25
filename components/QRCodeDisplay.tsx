@@ -7,9 +7,8 @@ export default function QRCodeDisplay() {
     const [currentUrl, setCurrentUrl] = useState('');
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setCurrentUrl(window.location.href);
-        }
+        // eslint-disable-next-line
+        setCurrentUrl(window.location.href);
     }, []);
 
     if (!currentUrl) return null;
