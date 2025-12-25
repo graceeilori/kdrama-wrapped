@@ -56,4 +56,108 @@
   --color-vibe-130: var(--vibe-130);
   --color-vibe-140: var(--vibe-140);
   --color-vibe-150: var(--vibe-150);
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-bricolage);
+  --font-accent: var(--font-reenie);
+
+  /* Typography */
+  --text-h1: 64px;
+  --text-h1--line-height: 1.1;
+  --text-h2: 48px;
+  --text-h2--line-height: 1.1;
+  --text-h3: 40px;
+  --text-h3--line-height: 1.2;
+  --text-h4: 36px;
+  --text-h4--line-height: 1.2;
+
+  --text-sub-1: 28px;
+  --text-sub-1--line-height: 1.4;
+  --text-sub-2: 24px;
+  --text-sub-2--line-height: 1.4;
+
+  --text-body-xl: 20px;
+  --text-body-xl--line-height: 1.5;
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.5;
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.5;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.5;
+}
+
+@layer utilities {
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+
+  .font-accent {
+    font-family: var(--font-accent);
+  }
+
+  /* Headings */
+  .text-h1 {
+    font-family: var(--font-heading);
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    font-weight: 700;
+  }
+
+  .text-h2 {
+    font-family: var(--font-heading);
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    font-weight: 700;
+  }
+
+  .text-h3 {
+    font-family: var(--font-heading);
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    font-weight: 700;
+  }
+
+  .text-h4 {
+    font-family: var(--font-heading);
+    font-size: var(--text-h4);
+    line-height: var(--text-h4--line-height);
+    font-weight: 700;
+  }
+
+  /* Subheadings */
+  .text-sub-1 {
+    font-size: var(--text-sub-1);
+    line-height: var(--text-sub-1--line-height);
+  }
+
+  .text-sub-2 {
+    font-size: var(--text-sub-2);
+    line-height: var(--text-sub-2--line-height);
+  }
+
+  /* Body Text */
+  .text-body-xl {
+    font-size: var(--text-body-xl);
+    line-height: var(--text-body-xl--line-height);
+  }
+
+  .text-body-lg {
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+  }
+
+  .text-body-md {
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+  }
+
+  .text-body-sm {
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-sm--line-height);
+  }
+
+  /* Handwriting base style */
+  .text-handwriting {
+    font-family: var(--font-accent);
+  }
 }

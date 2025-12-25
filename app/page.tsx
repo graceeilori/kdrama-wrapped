@@ -13,23 +13,23 @@ export default function Home() {
 
         <div className="relative z-10 max-w-4xl mx-auto space-y-8">
           <div className="inline-block animate-bounce">
-            <span className="px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/10 text-pink-300 text-sm font-medium tracking-wide uppercase">
+            <span className="px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/10 text-pink-300 text-body-sm font-medium tracking-wide uppercase">
               2025 Edition
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-pink-200 to-purple-200">
-            K-Drama <br className="hidden md:block" /> Wrapped
+          <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-pink-200 to-purple-200">
+            K-Dramad <br className="hidden md:block" /> Wrapped
           </h1>
 
-          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-body-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
             Relive your year in K-Dramas. Discover your top oppas, most watched genres, and wasted hours in style.
           </p>
 
           <div className="pt-8 flex flex-col items-center gap-4">
             <Link
               href="/create"
-              className="group relative px-8 py-4 bg-white text-black font-bold text-lg rounded-full transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-pink-500/30"
+              className="group relative px-8 py-4 bg-white text-black font-bold text-body-lg rounded-full transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-pink-500/30"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Generate My Wrapped
@@ -40,7 +40,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-10 transition-opacity"></div>
             </Link>
 
-            <p className="text-sm text-gray-500 flex items-center gap-2">
+            <p className="text-body-sm text-gray-500 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
               Best experienced on mobile
             </p>
@@ -55,22 +55,22 @@ export default function Home() {
             <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 mx-auto md:mx-0">
               📺
             </div>
-            <h3 className="text-xl font-bold text-white">Watch Stats</h3>
-            <p className="text-gray-400 leading-relaxed">Detailed breakdown of total hours, episodes, and number of dramas consumed.</p>
+            <h3 className="text-h3 text-white">Watch Stats</h3>
+            <p className="text-body-md text-gray-400 leading-relaxed">Detailed breakdown of total hours, episodes, and number of dramas consumed.</p>
           </div>
           <div className="space-y-4 p-6 rounded-2xl bg-neutral-900/50 hover:bg-neutral-800/50 transition-colors border border-white/5">
             <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-500 mx-auto md:mx-0">
               🎭
             </div>
-            <h3 className="text-xl font-bold text-white">Genre Analysis</h3>
-            <p className="text-gray-400 leading-relaxed">Are you a Rom-Com lover or a Thriller seeker? See your genre distribution.</p>
+            <h3 className="text-h3 text-white">Genre Analysis</h3>
+            <p className="text-body-md text-gray-400 leading-relaxed">Are you a Rom-Com lover or a Thriller seeker? See your genre distribution.</p>
           </div>
           <div className="space-y-4 p-6 rounded-2xl bg-neutral-900/50 hover:bg-neutral-800/50 transition-colors border border-white/5">
             <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 mx-auto md:mx-0">
               💌
             </div>
-            <h3 className="text-xl font-bold text-white">Shareable Cards</h3>
-            <p className="text-gray-400 leading-relaxed">Beautifully generated Instagram-story ready cards to flex your KDrama addiction.</p>
+            <h3 className="text-h3 text-white">Shareable Cards</h3>
+            <p className="text-body-md text-gray-400 leading-relaxed">Beautifully generated Instagram-story ready cards to flex your KDrama addiction.</p>
           </div>
         </div>
       </section>
