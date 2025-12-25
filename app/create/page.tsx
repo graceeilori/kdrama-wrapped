@@ -17,13 +17,13 @@ export default function CreatePage() {
                             📝
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold">Let's Get Started</h1>
-                            <p className="text-sm opacity-80">Choose your vibe & input stats</p>
+                            <h1 className="text-h3 font-bold">Let&apos;s Get Started</h1>
+                            <p className="text-body-sm opacity-80">Choose your vibe & input stats</p>
                         </div>
                     </div>
 
                     <div className="mb-8">
-                        <label className="block text-sm font-medium mb-3">Choose a Theme</label>
+                        <label className="block text-body-sm font-medium mb-3">Choose a Theme</label>
                         <div className="grid grid-cols-3 gap-3">
                             {(Object.keys(themes) as Theme[]).map((themeKey) => (
                                 <button
@@ -38,10 +38,10 @@ export default function CreatePage() {
                                         className="aspect-square rounded-md mb-2 shadow-sm"
                                         style={{
                                             backgroundColor: themes[themeKey].colors['--bg-primary'],
-                                            border: `2px solid ${themes[themeKey].colors['--accent']}`
+                                            border: `2px solid ${themes[themeKey].colors['--accent-10']}`
                                         }}
                                     />
-                                    <span className="block text-xs text-center font-medium truncate">
+                                    <span className="block text-body-sm text-center font-medium truncate">
                                         {themes[themeKey].label}
                                     </span>
                                 </button>
@@ -51,10 +51,10 @@ export default function CreatePage() {
 
                     <div className="space-y-4">
                         <div className="bg-white/5 rounded-xl p-8 text-center border-2 border-dashed border-white/20 opacity-70">
-                            <p>Form Inputs Coming Soon...</p>
+                            <p className="text-body-md">Form Inputs Coming Soon...</p>
                         </div>
 
-                        <button className="w-full py-3 bg-accent text-white rounded-xl font-bold shadow-lg shadow-accent/20">
+                        <button className="w-full py-3 bg-accent text-white rounded-xl text-body-lg font-bold shadow-lg shadow-accent/20">
                             Generate Wrapped
                         </button>
                     </div>
