@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+@theme {
+  --color-bg-primary: var(--bg-primary);
+  --color-text-primary: var(--text-primary);
+  --color-accent: var(--accent);
+}
