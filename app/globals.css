@@ -226,6 +226,18 @@
   }
 }
 
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
 @layer components {
   .badge-handwritten {
     @apply flex px-8 py-2 rounded-full border-2 border-stat-50 bg-stat-40 rotate-[-4.017deg] transition-transform;
@@ -242,5 +254,9 @@
 
   .feature-card {
     @apply p-8 rounded-2xl flex flex-col items-start text-left h-full transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-md hover:shadow-text-primary/5 hover:scale-[1.02];
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 }

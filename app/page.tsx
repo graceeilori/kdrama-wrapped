@@ -13,14 +13,14 @@ export default function Home() {
           alt=""
           width={60}
           height={60}
-          className="absolute top-[3%] right-[3%] blur-[0.5px] md:absolute md:top-[5%] md:right-[5%] md:w-[120px] md:h-[120px]"
+          className="absolute top-[2%] right-[2%] blur-[0.5px] md:absolute md:top-[5%] md:right-[5%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/star-sec10.svg"
           alt=""
           width={60}
           height={60}
-          className="absolute top-[28%] left-[10%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
+          className="absolute top-[30%] left-[8%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/spiral-p30.svg"
@@ -34,7 +34,7 @@ export default function Home() {
           alt=""
           width={32}
           height={32}
-          className="absolute top-[7%] right-[18%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px] animate-spin-slow"
+          className="absolute top-[7%] right-[15%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px] animate-spin-slow"
         />
         <Image
           src="/assets/landing-celebrate.svg"
@@ -87,7 +87,7 @@ export default function Home() {
             title="Watch Stats"
             description="Get your total hours, episodes, and number of dramas consumed."
             iconSrc="/assets/tv-white.svg"
-            className="bg-primary-10 hover:rotate-[-1deg]"
+            className="bg-primary-10 hover:rotate-[-1deg] animate-float md:animate-none"
             iconBgClass="bg-vibe-50"
           />
 
@@ -96,7 +96,7 @@ export default function Home() {
             title="Genre Analysis"
             description="Get your top genres and find out what you gravitated towards."
             iconSrc="/assets/pie-white.svg"
-            className="bg-vibe-90 hover:rotate-[1deg]"
+            className="bg-vibe-90 hover:rotate-[1deg] animate-float md:animate-none"
             iconBgClass="bg-vibe-80"
           />
 
@@ -105,7 +105,7 @@ export default function Home() {
             title="Shareable Cards"
             description="Download and share the summary of your year in dramas."
             iconSrc="/assets/cards-white.svg"
-            className="bg-vibe-30 hover:rotate-[1deg]"
+            className="bg-vibe-30 hover:rotate-[-1deg] animate-float md:animate-none"
             iconBgClass="bg-vibe-20"
           />
         </div>
