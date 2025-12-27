@@ -123,7 +123,7 @@ export default function Home() {
         <div className="flex items-center justify-center gap-4 text-sm text-gray-600 font-sans underline decoration-gray-300 underline-offset-4">
           <Link href="#" className="hover:text-black hidden">Linktree</Link>
           <Image hidden src="/assets/circle-footer.svg" alt="" width={8} height={8} />
-          <Link href="#" className="hover:text-black">Support Creator</Link>
+          <Link href="https://ko-fi.com/kdramawrapped" target="_blank" className="hover:text-black">Support Creator</Link>
           <Image src="/assets/circle-footer.svg" alt="" width={8} height={8} />
           <Link href="#" className="hover:text-black">Report a Bug</Link>
         </div>
