@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import PrimaryButton from '@/components/PrimaryButton';
+import FeatureCard from '@/components/FeatureCard';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-bg-primary text-text-primary selection:bg-primary-30 selection:text-primary-50 overflow-x-hidden relative">
+    <main className="min-h-screen bg-bg-primary text-text-primary selection:bg-secondary-10 selection:text-primary overflow-x-hidden relative">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <Image
@@ -12,42 +13,42 @@ export default function Home() {
           alt=""
           width={60}
           height={60}
-          className="absolute top-[3%] right-[3%] blur-[0.5px] md:absolute md:top-[5%] md:right-[5%] md:w-[120px] md:h-[120px]"
+          className="absolute top-[1%] right-[1%] blur-[0.5px] md:absolute md:top-[5%] md:right-[5%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/star-sec10.svg"
           alt=""
           width={60}
           height={60}
-          className="absolute top-[30%] left-[16%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
+          className="absolute top-[28%] left-[8%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/spiral-p30.svg"
           alt=""
           width={60}
           height={60}
-          className="absolute bottom-[15%] right-[5%] blur-[0.5px] md:absolute md:bottom-[15%] md:right-[15%] md:w-[120px] md:h-[120px]"
+          className="absolute bottom-[14%] right-[5%] blur-[0.5px] md:absolute md:bottom-[12%] md:right-[10%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/landing-sparkle.svg"
           alt=""
           width={32}
           height={32}
-          className="absolute top-[8%] right-[18%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px]"
+          className="absolute top-[6%] right-[15%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px] animate-spin-slow"
         />
         <Image
           src="/assets/landing-celebrate.svg"
           alt=""
           width={28}
           height={28}
-          className="absolute top-[18%] left-[12%] md:absolute md:top-[36%] md:left-[30%] md:w-[56px] md:h-[56px]"
+          className="absolute top-[18%] left-[12%] md:absolute md:top-[38%] md:left-[30%] md:w-[56px] md:h-[56px]"
         />
       </div>
 
       {/* Hero Section */}
-      <section className="relative z-10 px-6 py-20 md:py-48 flex flex-col items-center justify-center text-center">
+      <section className="relative z-10 px-6 py-8 md:py-48 flex flex-col items-center justify-center text-center">
         <div className="flex flex-col items-center">
-          {/* Badge - Rotated & Handwriting font */}
+
           <div className="flex flex-col items-center">
             <div className="badge-handwritten">
               <div className="badge-handwritten-text">2025 Edition</div>
@@ -79,59 +80,51 @@ export default function Home() {
       </section>
 
       {/* Feature Cards */}
-      <section className="py-20 px-6">
+      <section className="py-2 px-6 relative z-10">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Watch Stats - Pink */}
-          <div className="p-8 rounded-2xl bg-primary-10 flex flex-col items-start text-left h-full transition-transform hover:-translate-y-1">
-            <div className="w-14 h-14 bg-black/5 rounded-xl flex items-center justify-center mb-6">
-              <Image src="/assets/file.svg" alt="Icon" width={32} height={32} />
-            </div>
-            <h3 className="font-heading text-2xl font-bold text-text-primary mb-3">Watch Stats</h3>
-            <p className="font-sans text-text-primary/80 text-base leading-relaxed">
-              Get your total hours, episodes, and number of dramas consumed.
-            </p>
-          </div>
+          {/* Watch Stats*/}
+          <FeatureCard
+            title="Watch Stats"
+            description="Get your total hours, episodes, and number of dramas consumed."
+            iconSrc="/assets/tv-white.svg"
+            className="bg-primary-10 hover:rotate-[-1deg] animate-float md:animate-none"
+            iconBgClass="bg-vibe-50"
+          />
 
-          {/* Genre Analysis - Beige/Yellow */}
-          <div className="p-8 rounded-2xl bg-stat-40/50 flex flex-col items-start text-left h-full transition-transform hover:-translate-y-1">
-            <div className="w-14 h-14 bg-black/5 rounded-xl flex items-center justify-center mb-6">
-              <Image src="/assets/file.svg" alt="Icon" width={32} height={32} />
-            </div>
-            <h3 className="font-heading text-2xl font-bold text-text-primary mb-3">Genre Analysis</h3>
-            <p className="font-sans text-text-primary/80 text-base leading-relaxed">
-              Get your total hours, episodes, and number of dramas consumed.
-            </p>
-          </div>
+          {/* Genre Analysis*/}
+          <FeatureCard
+            title="Genre Analysis"
+            description="Get your top genres and find out what you gravitated towards."
+            iconSrc="/assets/pie-white.svg"
+            className="bg-vibe-90 hover:rotate-[1deg] animate-float md:animate-none"
+            iconBgClass="bg-vibe-80"
+          />
 
-          {/* Shareable Cards - Purple */}
-          <div className="p-8 rounded-2xl bg-vibe-30/50 flex flex-col items-start text-left h-full transition-transform hover:-translate-y-1">
-            <div className="w-14 h-14 bg-black/5 rounded-xl flex items-center justify-center mb-6">
-              <Image src="/assets/file.svg" alt="Icon" width={32} height={32} />
-            </div>
-            <h3 className="font-heading text-2xl font-bold text-text-primary mb-3">Shareable Cards</h3>
-            <p className="font-sans text-text-primary/80 text-base leading-relaxed">
-              Get your total hours, episodes, and number of dramas consumed.
-            </p>
-          </div>
+          {/* Shareable Cards*/}
+          <FeatureCard
+            title="Shareable Cards"
+            description="Download and share the summary of your year in dramas."
+            iconSrc="/assets/cards-white.svg"
+            className="bg-vibe-30 hover:rotate-[-1deg] animate-float md:animate-none"
+            iconBgClass="bg-vibe-20"
+          />
         </div>
       </section>
 
-      <footer className="py-12 text-center">
+      <footer className="py-16 text-center">
         <div className="flex items-center justify-center gap-2 font-accent text-lg text-text-primary mb-4">
-          <span>Made with</span>
-          <span className="text-vibe-10 text-xl">♥</span>
-          <span>by a Fan for Fans</span>
+          <span>Made with 💜 by a Fan for Fans</span>
         </div>
 
         <p className="text-xs text-gray-500 font-sans mb-4">
           This product uses the TMDB API but is not endorsed or certified by TMDB.
         </p>
 
-        <div className="flex items-center justify-center gap-6 text-sm text-gray-600 font-sans underline decoration-gray-300 underline-offset-4">
-          <Link href="#" className="hover:text-black">Linktree</Link>
-          <span className="text-gray-300 no-underline">•</span>
-          <Link href="#" className="hover:text-black">Support Creator</Link>
-          <span className="text-gray-300 no-underline">•</span>
+        <div className="flex items-center justify-center gap-4 text-sm text-gray-600 font-sans underline decoration-gray-300 underline-offset-4">
+          <Link href="#" className="hover:text-black hidden">Linktree</Link>
+          <Image hidden src="/assets/circle-footer.svg" alt="" width={8} height={8} />
+          <Link href="https://ko-fi.com/kdramawrapped" target="_blank" className="hover:text-black">Support Creator</Link>
+          <Image src="/assets/circle-footer.svg" alt="" width={8} height={8} />
           <Link href="#" className="hover:text-black">Report a Bug</Link>
         </div>
       </footer>
