@@ -5,7 +5,7 @@ import FeatureCard from '@/components/FeatureCard';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-bg-primary text-text-primary selection:bg-primary-30 selection:text-primary-50 overflow-x-hidden relative">
+    <main className="min-h-screen bg-bg-primary text-text-primary selection:bg-secondary-10 selection:text-primary overflow-x-hidden relative">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <Image
@@ -20,21 +20,21 @@ export default function Home() {
           alt=""
           width={60}
           height={60}
-          className="absolute top-[30%] left-[10%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
+          className="absolute top-[28%] left-[10%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/spiral-p30.svg"
           alt=""
           width={60}
           height={60}
-          className="absolute bottom-[15%] right-[5%] blur-[0.5px] md:absolute md:bottom-[10%] md:right-[10%] md:w-[120px] md:h-[120px]"
+          className="absolute bottom-[14%] right-[5%] blur-[0.5px] md:absolute md:bottom-[12%] md:right-[10%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/landing-sparkle.svg"
           alt=""
           width={32}
           height={32}
-          className="absolute top-[7%] right-[18%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px]"
+          className="absolute top-[7%] right-[18%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px] animate-spin-slow"
         />
         <Image
           src="/assets/landing-celebrate.svg"
@@ -111,22 +111,20 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="py-12 text-center">
+      <footer className="py-16 text-center">
         <div className="flex items-center justify-center gap-2 font-accent text-lg text-text-primary mb-4">
-          <span>Made with</span>
-          <span className="text-vibe-10 text-xl">♥</span>
-          <span>by a Fan for Fans</span>
+          <span>Made with 💜 by a Fan for Fans</span>
         </div>
 
         <p className="text-xs text-gray-500 font-sans mb-4">
           This product uses the TMDB API but is not endorsed or certified by TMDB.
         </p>
 
-        <div className="flex items-center justify-center gap-6 text-sm text-gray-600 font-sans underline decoration-gray-300 underline-offset-4">
-          <Link href="#" className="hover:text-black">Linktree</Link>
-          <span className="text-gray-300 no-underline">•</span>
+        <div className="flex items-center justify-center gap-4 text-sm text-gray-600 font-sans underline decoration-gray-300 underline-offset-4">
+          <Link href="#" className="hover:text-black hidden">Linktree</Link>
+          <Image hidden src="/assets/circle-footer.svg" alt="" width={8} height={8} />
           <Link href="#" className="hover:text-black">Support Creator</Link>
-          <span className="text-gray-300 no-underline">•</span>
+          <Image src="/assets/circle-footer.svg" alt="" width={8} height={8} />
           <Link href="#" className="hover:text-black">Report a Bug</Link>
         </div>
       </footer>
