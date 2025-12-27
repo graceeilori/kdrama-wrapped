@@ -13,14 +13,14 @@ export default function Home() {
           alt=""
           width={60}
           height={60}
-          className="absolute top-[2%] right-[2%] blur-[0.5px] md:absolute md:top-[5%] md:right-[5%] md:w-[120px] md:h-[120px]"
+          className="absolute top-[1%] right-[1%] blur-[0.5px] md:absolute md:top-[5%] md:right-[5%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/star-sec10.svg"
           alt=""
           width={60}
           height={60}
-          className="absolute top-[30%] left-[8%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
+          className="absolute top-[28%] left-[8%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
         />
         <Image
           src="/assets/spiral-p30.svg"
@@ -34,7 +34,7 @@ export default function Home() {
           alt=""
           width={32}
           height={32}
-          className="absolute top-[7%] right-[15%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px] animate-spin-slow"
+          className="absolute top-[6%] right-[15%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px] animate-spin-slow"
         />
         <Image
           src="/assets/landing-celebrate.svg"
