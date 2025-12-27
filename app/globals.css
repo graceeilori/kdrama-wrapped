@@ -1,5 +1,55 @@
 @import "tailwindcss";
 
+:root {
+  --bg-primary: #FBF9EF;
+  --text-primary: #201C24;
+  --primary-10: #FEECF0;
+  --primary-20: #FBD0DA;
+  --primary-30: #FABDCB;
+  --primary-40: #F35E80;
+  --primary-50: #DA113F;
+  --secondary-10: #CCD3F0;
+  --secondary-20: #A4B1E4;
+  --secondary-30: #566ECD;
+  --accent-10: #84D1D8;
+  --accent-20: #E18B69;
+  --accent-30: #E7B7B5;
+  --neutral-10: #FCFCFC;
+  --neutral-20: #B3B3B3;
+  --neutral-30: #1A1A1A;
+  --fragment-10: #E5B3D2;
+  --fragment-20: #AA8CD9;
+  --fragment-30: #D6B3E5;
+  --fragment-40: #F2D184;
+  --fragment-50: #E06F6C;
+  --fragment-60: #F49C71;
+  --stat-10: var(--secondary-20);
+  --stat-20: #E5E0B3;
+  --stat-30: #B3E5E0;
+  --stat-40: #F8E5BA;
+  --stat-50: #EFC25D;
+  --seed-10: #D6B3E5;
+  --seed-20: #B1C8E7;
+  --seed-30: #F3A5AB;
+  --seed-40: #CBE7B1;
+  --seed-50: #F3E2A5;
+  --vibe-10: #8633E3;
+  --vibe-20: #B08FD6;
+  --vibe-30: #E9E1F5;
+  --vibe-40: #EF4F93;
+  --vibe-50: #D88DAE;
+  --vibe-60: #F4E1E9;
+  --vibe-70: #EFB63B;
+  --vibe-80: #D8C08D;
+  --vibe-90: #F5EEE1;
+  --vibe-100: #4653EA;
+  --vibe-110: #8189E4;
+  --vibe-120: #DDE0F8;
+  --vibe-130: #E23E3E;
+  --vibe-140: #D68F8F;
+  --vibe-150: #F4E1E1;
+}
+
 @theme {
   --color-bg-primary: var(--bg-primary);
   --color-text-primary: var(--text-primary);
@@ -56,6 +106,7 @@
   --color-vibe-130: var(--vibe-130);
   --color-vibe-140: var(--vibe-140);
   --color-vibe-150: var(--vibe-150);
+
   /* Fonts */
   --font-sans: var(--font-inter);
   --font-heading: var(--font-bricolage);
@@ -87,12 +138,12 @@
 }
 
 @layer utilities {
-  .font-heading {
-    font-family: var(--font-heading);
+  .font-accent {
+    font-family: var(--font-reenie), cursive !important;
   }
 
-  .font-accent {
-    font-family: var(--font-accent);
+  .font-heading {
+    font-family: var(--font-bricolage), sans-serif;
   }
 
   /* Headings */
@@ -159,5 +210,20 @@
   /* Handwriting base style */
   .text-handwriting {
     font-family: var(--font-accent);
+  }
+}
+
+@layer components {
+  .badge-handwritten {
+    @apply flex px-8 py-2 rounded-full border-2 border-stat-50 bg-stat-40 rotate-[-4.017deg] transition-transform;
+  }
+
+  .badge-handwritten-text {
+    @apply text-text-primary text-4xl;
+    font-family: var(--font-reenie);
+  }
+
+  .badge-handwritten:hover {
+    @apply scale-105;
   }
 }
