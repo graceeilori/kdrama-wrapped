@@ -1,82 +1,139 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import PrimaryButton from '@/components/PrimaryButton';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black text-white selection:bg-pink-500 selection:text-white">
-      {/* Hero Section */}
-      <section className="relative px-6 py-24 md:py-32 flex flex-col items-center justify-center text-center overflow-hidden">
-        {/* Background Decorative Elements */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
-        </div>
+    <main className="min-h-screen bg-bg-primary text-text-primary selection:bg-primary-30 selection:text-primary-50 overflow-x-hidden relative">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+        <Image
+          src="/assets/heart-frag50.svg"
+          alt=""
+          width={60}
+          height={60}
+          className="absolute top-[3%] right-[3%] blur-[0.5px] md:absolute md:top-[5%] md:right-[5%] md:w-[120px] md:h-[120px]"
+        />
+        <Image
+          src="/assets/star-sec10.svg"
+          alt=""
+          width={60}
+          height={60}
+          className="absolute top-[30%] left-[16%] blur-[0.5px] md:absolute md:top-[50%] md:left-[5%] md:right-[10%] md:w-[120px] md:h-[120px]"
+        />
+        <Image
+          src="/assets/spiral-p30.svg"
+          alt=""
+          width={60}
+          height={60}
+          className="absolute bottom-[15%] right-[5%] blur-[0.5px] md:absolute md:bottom-[15%] md:right-[15%] md:w-[120px] md:h-[120px]"
+        />
+        <Image
+          src="/assets/landing-sparkle.svg"
+          alt=""
+          width={32}
+          height={32}
+          className="absolute top-[8%] right-[18%] md:absolute md:top-[15%] md:right-[28%] md:w-[64px] md:h-[64px]"
+        />
+        <Image
+          src="/assets/landing-celebrate.svg"
+          alt=""
+          width={28}
+          height={28}
+          className="absolute top-[18%] left-[12%] md:absolute md:top-[36%] md:left-[30%] md:w-[56px] md:h-[56px]"
+        />
+      </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto space-y-8">
-          <div className="inline-block animate-bounce">
-            <span className="px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/10 text-pink-300 text-body-sm font-medium tracking-wide uppercase">
-              2025 Edition
-            </span>
+      {/* Hero Section */}
+      <section className="relative z-10 px-6 py-20 md:py-48 flex flex-col items-center justify-center text-center">
+        <div className="flex flex-col items-center">
+          {/* Badge - Rotated & Handwriting font */}
+          <div className="flex flex-col items-center">
+            <div className="badge-handwritten">
+              <div className="badge-handwritten-text">2025 Edition</div>
+            </div>
           </div>
 
-          <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-pink-200 to-purple-200">
-            K-Dramad <br className="hidden md:block" /> Wrapped
-          </h1>
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="font-heading text-6xl md:text-8xl lg:text-9xl font-black tracking-tight leading-[0.9] text-text-primary">
+              K-Drama<br />
+              Wrapped
+            </h1>
+            <p className="font-sans text-vibe-130 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed mt-6">
+              Relive your year in K-Drama. Discover your top genres and <br className="hidden md:block" />
+              watch hours.
+            </p>
+          </div>
+        </div>
 
-          <p className="text-body-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Relive your year in K-Dramas. Discover your top oppas, most watched genres, and wasted hours in style.
-          </p>
+        <div className="pt-10 flex flex-col items-center gap-4">
+          <PrimaryButton href="/create">
+            Generate Your Wrapped
+          </PrimaryButton>
 
-          <div className="pt-8 flex flex-col items-center gap-4">
-            <Link
-              href="/create"
-              className="group relative px-8 py-4 bg-white text-black font-bold text-body-lg rounded-full transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-pink-500/30"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                Generate My Wrapped
-                <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full opacity-0 group-hover:opacity-10 transition-opacity"></div>
-            </Link>
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 font-sans">
+            <Image src="/assets/circle-note.svg" alt="" width={10} height={10} />
+            <span>Best experienced on mobile</span>
+          </div>
+        </div>
+      </section>
 
-            <p className="text-body-sm text-gray-500 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              Best experienced on mobile
+      {/* Feature Cards */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Watch Stats - Pink */}
+          <div className="p-8 rounded-2xl bg-primary-10 flex flex-col items-start text-left h-full transition-transform hover:-translate-y-1">
+            <div className="w-14 h-14 bg-black/5 rounded-xl flex items-center justify-center mb-6">
+              <Image src="/assets/file.svg" alt="Icon" width={32} height={32} />
+            </div>
+            <h3 className="font-heading text-2xl font-bold text-text-primary mb-3">Watch Stats</h3>
+            <p className="font-sans text-text-primary/80 text-base leading-relaxed">
+              Get your total hours, episodes, and number of dramas consumed.
+            </p>
+          </div>
+
+          {/* Genre Analysis - Beige/Yellow */}
+          <div className="p-8 rounded-2xl bg-stat-40/50 flex flex-col items-start text-left h-full transition-transform hover:-translate-y-1">
+            <div className="w-14 h-14 bg-black/5 rounded-xl flex items-center justify-center mb-6">
+              <Image src="/assets/file.svg" alt="Icon" width={32} height={32} />
+            </div>
+            <h3 className="font-heading text-2xl font-bold text-text-primary mb-3">Genre Analysis</h3>
+            <p className="font-sans text-text-primary/80 text-base leading-relaxed">
+              Get your total hours, episodes, and number of dramas consumed.
+            </p>
+          </div>
+
+          {/* Shareable Cards - Purple */}
+          <div className="p-8 rounded-2xl bg-vibe-30/50 flex flex-col items-start text-left h-full transition-transform hover:-translate-y-1">
+            <div className="w-14 h-14 bg-black/5 rounded-xl flex items-center justify-center mb-6">
+              <Image src="/assets/file.svg" alt="Icon" width={32} height={32} />
+            </div>
+            <h3 className="font-heading text-2xl font-bold text-text-primary mb-3">Shareable Cards</h3>
+            <p className="font-sans text-text-primary/80 text-base leading-relaxed">
+              Get your total hours, episodes, and number of dramas consumed.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Feature Micro-Grid */}
-      <section className="bg-neutral-900/50 py-24 px-6 border-t border-neutral-800">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-          <div className="space-y-4 p-6 rounded-2xl bg-neutral-900/50 hover:bg-neutral-800/50 transition-colors border border-white/5">
-            <div className="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500 mx-auto md:mx-0">
-              📺
-            </div>
-            <h3 className="text-h3 text-white">Watch Stats</h3>
-            <p className="text-body-md text-gray-400 leading-relaxed">Detailed breakdown of total hours, episodes, and number of dramas consumed.</p>
-          </div>
-          <div className="space-y-4 p-6 rounded-2xl bg-neutral-900/50 hover:bg-neutral-800/50 transition-colors border border-white/5">
-            <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-500 mx-auto md:mx-0">
-              🎭
-            </div>
-            <h3 className="text-h3 text-white">Genre Analysis</h3>
-            <p className="text-body-md text-gray-400 leading-relaxed">Are you a Rom-Com lover or a Thriller seeker? See your genre distribution.</p>
-          </div>
-          <div className="space-y-4 p-6 rounded-2xl bg-neutral-900/50 hover:bg-neutral-800/50 transition-colors border border-white/5">
-            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 mx-auto md:mx-0">
-              💌
-            </div>
-            <h3 className="text-h3 text-white">Shareable Cards</h3>
-            <p className="text-body-md text-gray-400 leading-relaxed">Beautifully generated Instagram-story ready cards to flex your KDrama addiction.</p>
-          </div>
+      <footer className="py-12 text-center">
+        <div className="flex items-center justify-center gap-2 font-accent text-lg text-text-primary mb-4">
+          <span>Made with</span>
+          <span className="text-vibe-10 text-xl">♥</span>
+          <span>by a Fan for Fans</span>
         </div>
-      </section>
 
-      <footer className="bg-black py-8 text-center text-gray-600 text-sm border-t border-white/5">
-        <p>&copy; 2025 K-Drama Wrapped. Not affiliated with any streaming service.</p>
+        <p className="text-xs text-gray-500 font-sans mb-4">
+          This product uses the TMDB API but is not endorsed or certified by TMDB.
+        </p>
+
+        <div className="flex items-center justify-center gap-6 text-sm text-gray-600 font-sans underline decoration-gray-300 underline-offset-4">
+          <Link href="#" className="hover:text-black">Linktree</Link>
+          <span className="text-gray-300 no-underline">•</span>
+          <Link href="#" className="hover:text-black">Support Creator</Link>
+          <span className="text-gray-300 no-underline">•</span>
+          <Link href="#" className="hover:text-black">Report a Bug</Link>
+        </div>
       </footer>
     </main>
   );
