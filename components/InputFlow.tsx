@@ -231,21 +231,15 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
     const isValid = dramaCount > 0 && hasTop3;
 
     return (
-        <div className="w-full flex flex-col items-center justify-center py-6">
+        <div className="w-full flex flex-col items-center justify-center">
 
-            {/* Top 3 Choice - NEW SECTION MOVED HERE */}
-            <motion.div
-                className="mb-8 p-6 rounded-2xl border-2"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.55 }}
-                style={{ borderColor: colors.border, backgroundColor: colors.exampleBg }}
-            >
+            {/* Top 3 Dramas */}
+            <div className="mb-10 w-full rounded-2xl border-2 border-secondary-20 p-6 text-left">
                 <div className="flex items-center gap-2 mb-2">
                     <Trophy className="size-6 text-accent-10" />
-                    <label className="font-heading font-black text-2xl tracking-tight">Your Top 3 K-Dramas</label>
+                    <label className="font-heading font-black text-xl tracking-tight text-text-primary">Your Top 3 K-Dramas</label>
                 </div>
-                <p className="font-sans text-sm mb-6 opacity-70">These are separate from your list. Make sure to enter your absolute favorites!</p>
+                <p className="font-sans text-sm mb-6 opacity-70">Enter your ultimate favorites of the year!</p>
 
                 <div className="grid grid-cols-1 gap-4">
                     {[0, 1, 2].map((idx) => (
@@ -257,7 +251,7 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
                                 type="text"
                                 value={topDramas[idx as 0 | 1 | 2]}
                                 onChange={(e) => handleTopDramaChange(idx as 0 | 1 | 2, e.target.value)}
-                                placeholder={idx === 0 ? "Best Drama of 2025" : idx === 1 ? "Second Best" : "Third Best"}
+                                placeholder={idx === 0 ? "Your Best Drama of 2025" : idx === 1 ? "Second" : "Third"}
                                 className="w-full rounded-xl py-4 pl-12 pr-4 font-sans text-[16px] focus:outline-none transition-all placeholder:text-text-primary/30 focus:ring-2 focus:ring-accent-10"
                                 style={{
                                     backgroundColor: colors.inputBg,
@@ -268,7 +262,8 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
                         </div>
                     ))}
                 </div>
-            </motion.div>
+            </div>
+
             <motion.div
                 className="w-full max-w-2xl"
                 initial={{ opacity: 0, y: 20 }}

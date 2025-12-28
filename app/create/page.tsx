@@ -17,7 +17,7 @@ export default function CreatePage() {
             <ThemeWrapper theme="daylight">
                 <main className="min-h-screen w-full relative overflow-x-hidden bg-bg-primary text-text-primary">
 
-                    <div className="relative z-10 w-full max-w-4xl mx-auto px-6 py-12 flex flex-col items-center text-center">
+                    <div className="relative z-10 w-full max-w-4xl mx-auto px-5 py-12 flex flex-col items-center text-center">
 
                         {/* Header */}
                         <div className="mb-8">
@@ -30,12 +30,12 @@ export default function CreatePage() {
                         </div>
 
                         {/* Theme Selection*/}
-                        <div className="mb-10 w-full rounded-2xl border-2 border-secondary-20 p-8 text-left">
+                        <div className="mb-10 w-full rounded-2xl border-2 border-secondary-20 p-6 text-left">
                             <div className="flex items-center gap-2 mb-2">
                                 <Palette className="size-6 text-accent-20" />
                                 <label className="font-heading font-black text-xl tracking-tight text-text-primary">Select a Wrapped Theme</label>
                             </div>
-                            <p className="font-sans text-sm mb-6 opacity-70">This will be the look of your final result</p>
+                            <p className="font-sans text-sm mb-6 opacity-70">Choose a theme for your wrapped</p>
 
                             <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
                                 {(Object.keys(themes) as Theme[]).map((themeKey) => (
@@ -43,7 +43,7 @@ export default function CreatePage() {
                                         key={themeKey}
                                         onClick={() => setSelectedTheme(themeKey)}
                                         className={`relative p-3 rounded-xl border-2 transition-all flex flex-col items-start gap-4 
-                                                    ${selectedTheme === themeKey ? 'border-accent-20 bg-white/20 ring-1 ring-accent-20/20' : 'border-transparent'}`}>
+                                                    ${selectedTheme === themeKey ? 'border-secondary-20 bg-white/20 ring-1 ring-secondary-20/20' : 'border-transparent'}`}>
                                         <Image src={themes[themeKey].image} alt={themeKey} width={144} height={144} className='rounded-md' />
                                         <span className="text-body-sm font-medium text-left">
                                             {themes[themeKey].label}
