@@ -3,62 +3,68 @@
 import DeviceGuard from '@/components/DeviceGuard';
 import { useState } from 'react';
 import { Theme, themes } from '@/lib/themes';
+import InputFlow from '@/components/InputFlow';
 import ThemeWrapper from '@/components/ThemeWrapper';
+import Image from 'next/image';
+import { Palette } from 'lucide-react';
 
 export default function CreatePage() {
-    const [selectedTheme, setSelectedTheme] = useState<Theme>('standard');
+    // State to store the user's preferred theme for the FINAL wrapped result
+    const [selectedTheme, setSelectedTheme] = useState<Theme>('daylight');
 
     return (
         <DeviceGuard>
-            <ThemeWrapper theme={selectedTheme} className="min-h-screen flex flex-col items-center pt-10 px-4">
-                <div className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white font-bold">
-                            📝
-                        </div>
-                        <div>
-                            <h1 className="text-h3 font-bold">Let&apos;s Get Started</h1>
-                            <p className="text-body-sm opacity-80">Choose your vibe & input stats</p>
-                        </div>
-                    </div>
+            <ThemeWrapper theme="daylight">
+                <main className="min-h-screen w-full relative overflow-x-hidden bg-bg-primary text-text-primary">
 
-                    <div className="mb-8">
-                        <label className="block text-body-sm font-medium mb-3">Choose a Theme</label>
-                        <div className="grid grid-cols-3 gap-3">
-                            {(Object.keys(themes) as Theme[]).map((themeKey) => (
-                                <button
-                                    key={themeKey}
-                                    onClick={() => setSelectedTheme(themeKey)}
-                                    className={`
-                      relative p-2 rounded-lg border-2 transition-all
-                      ${selectedTheme === themeKey ? 'border-accent scale-105' : 'border-transparent opacity-70 hover:opacity-100'}
-                    `}
-                                >
-                                    <div
-                                        className="aspect-square rounded-md mb-2 shadow-sm"
-                                        style={{
-                                            backgroundColor: themes[themeKey].colors['--bg-primary'],
-                                            border: `2px solid ${themes[themeKey].colors['--accent-10']}`
-                                        }}
-                                    />
-                                    <span className="block text-body-sm text-center font-medium truncate">
-                                        {themes[themeKey].label}
-                                    </span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    <div className="relative z-10 w-full max-w-4xl mx-auto px-6 py-12 flex flex-col items-center text-center">
 
-                    <div className="space-y-4">
-                        <div className="bg-white/5 rounded-xl p-8 text-center border-2 border-dashed border-white/20 opacity-70">
-                            <p className="text-body-md">Form Inputs Coming Soon...</p>
+                        {/* Header */}
+                        <div className="mb-8">
+                            <h1 className="font-heading font-black text-4xl text-left mb-4 text-text-primary">
+                                Let&apos;s Create Your Wrapped
+                            </h1>
+                            <p className="font-sans text-md opacity-70 text-left">
+                                Share your watch list and preferences to get started.
+                            </p>
                         </div>
 
-                        <button className="w-full py-3 bg-accent text-white rounded-xl text-body-lg font-bold shadow-lg shadow-accent/20">
-                            Generate Wrapped
-                        </button>
+                        {/* Theme Selection*/}
+                        <div className="mb-10 w-full rounded-2xl border-2 border-secondary-20 p-8 text-left">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Palette className="size-6 text-accent-20" />
+                                <label className="font-heading font-black text-xl tracking-tight text-text-primary">Select a Wrapped Theme</label>
+                            </div>
+                            <p className="font-sans text-sm mb-6 opacity-70">This will be the look of your final result</p>
+
+                            <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
+                                {(Object.keys(themes) as Theme[]).map((themeKey) => (
+                                    <button
+                                        key={themeKey}
+                                        onClick={() => setSelectedTheme(themeKey)}
+                                        className={`relative p-3 rounded-xl border-2 transition-all flex flex-col items-start gap-4 
+                                                    ${selectedTheme === themeKey ? 'border-accent-20 bg-white/20 ring-1 ring-accent-20/20' : 'border-transparent'}`}>
+                                        <Image src={themes[themeKey].image} alt={themeKey} width={144} height={144} className='rounded-md' />
+                                        <span className="text-body-sm font-medium text-left">
+                                            {themes[themeKey].label}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <InputFlow
+                            theme="daylight"
+                            onComplete={(dramas, topDramas) => {
+                                console.log("Generating with theme:", selectedTheme);
+                                console.log("Dramas:", dramas);
+                                console.log("Top 3:", topDramas);
+                                // TODO: Navigate to generation or handle data
+                            }}
+                        />
+
                     </div>
-                </div>
+                </main>
             </ThemeWrapper>
         </DeviceGuard>
     );
