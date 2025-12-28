@@ -1,23 +1,30 @@
 'use client';
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, Lock, ChevronDown, ChevronUp, AlertCircle, CheckCircle, X, Trophy } from "lucide-react";
 import { Theme } from "@/lib/themes";
+import PrimaryButton from "@/components/PrimaryButton";
+
+export type PageState = "input" | "loading" | "confirmation";
 
 interface InputFlowProps {
     onComplete?: (dramas: string[], topDramas: string[]) => void;
+    onStateChange?: (state: PageState) => void;
     theme: Theme;
 }
 
-type PageState = "input" | "loading" | "confirmation";
 type ErrorType = "no-dramas" | "file-too-large" | "invalid-file" | "missing-top3" | null;
 
-export default function InputFlow({ onComplete, theme }: InputFlowProps) {
+export default function InputFlow({ onComplete, onStateChange, theme }: InputFlowProps) {
     const [inputText, setInputText] = useState("");
     const [showExamples, setShowExamples] = useState(false);
     const [error, setError] = useState<ErrorType>(null);
     const [pageState, setPageState] = useState<PageState>("input");
+
+    useEffect(() => {
+        onStateChange?.(pageState);
+    }, [pageState, onStateChange]);
     const [loadingStep, setLoadingStep] = useState(0);
     const [parsedDramas, setParsedDramas] = useState<string[]>([]);
     const [uncertainMatches, setUncertainMatches] = useState<Array<{ input: string; suggestion: string }>>([]);
@@ -25,7 +32,7 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
     // Top 3 Dramas State
     const [topDramas, setTopDramas] = useState<[string, string, string]>(["", "", ""]);
 
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    // const fileInputRef = useRef<HTMLInputElement>(null);
 
     const colors = {
         bg: "var(--bg-primary)",
@@ -56,44 +63,44 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
         setError(null);
     };
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+    // const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = e.target.files?.[0];
+    //     if (!file) return;
 
-        // Check file size (5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            setError("file-too-large");
-            return;
-        }
+    //     // Check file size (5MB)
+    //     if (file.size > 5 * 1024 * 1024) {
+    //         setError("file-too-large");
+    //         return;
+    //     }
 
-        // Check file type
-        const validTypes = [".txt", ".csv", ".xlsx"];
-        const fileExt = file.name.substring(file.name.lastIndexOf("."));
-        if (!validTypes.includes(fileExt.toLowerCase())) {
-            setError("invalid-file");
-            return;
-        }
+    //     // Check file type
+    //     const validTypes = [".txt", ".csv", ".xlsx"];
+    //     const fileExt = file.name.substring(file.name.lastIndexOf("."));
+    //     if (!validTypes.includes(fileExt.toLowerCase())) {
+    //         setError("invalid-file");
+    //         return;
+    //     }
 
-        // Read file
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const text = event.target?.result as string;
-            setInputText(text);
-            setError(null);
-        };
-        reader.readAsText(file);
-    };
+    //     // Read file
+    //     const reader = new FileReader();
+    //     reader.onload = (event) => {
+    //         const text = event.target?.result as string;
+    //         setInputText(text);
+    //         setError(null);
+    //     };
+    //     reader.readAsText(file);
+    // };
 
-    const handleDrop = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            const fakeEvent = {
-                target: { files: [file] }
-            } as unknown as React.ChangeEvent<HTMLInputElement>;
-            handleFileSelect(fakeEvent);
-        }
-    }, []);
+    // const handleDrop = useCallback((e: React.DragEvent) => {
+    //     e.preventDefault();
+    //     const file = e.dataTransfer.files[0];
+    //     if (file) {
+    //         const fakeEvent = {
+    //             target: { files: [file] }
+    //         } as unknown as React.ChangeEvent<HTMLInputElement>;
+    //         handleFileSelect(fakeEvent);
+    //     }
+    // }, []);
 
     const parseDramas = (text: string): string[] => {
         if (!text.trim()) return [];
@@ -102,16 +109,31 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
         const dramas: string[] = [];
 
         lines.forEach(line => {
-            // Remove bullets, numbers, extra whitespace
-            let cleaned = line.trim();
-            cleaned = cleaned.replace(/^[-•*]\s*/, ""); // Remove bullets
-            cleaned = cleaned.replace(/^\d+\.\s*/, ""); // Remove numbers
-            cleaned = cleaned.replace(/\s*\(\d{4}\)\s*$/, ""); // Remove year
-            cleaned = cleaned.replace(/\s*-\s*.+$/, ""); // Remove details after dash
+            // Split by comma to handle "Drama A, Drama B"
+            const segments = line.split(",");
 
-            if (cleaned.length > 2) {
-                dramas.push(cleaned);
-            }
+            segments.forEach(segment => {
+                let cleaned = segment.trim();
+
+                // Remove bullets, numbers, extra whitespace
+                cleaned = cleaned.replace(/^[-•*]\s*/, ""); // Remove bullets
+                cleaned = cleaned.replace(/^\d+\.\s*/, ""); // Remove numbers
+
+                // Remove Emojis and Symbols (Arrows, Stars, Pictographs, etc.)
+                // Includes Arrows (2190-21FF), Misc (2600-27BF), and Emoji ranges (1F300-1F9FF)
+                cleaned = cleaned.replace(/[\u2190-\u21FF\u2600-\u27BF\u{1F300}-\u{1F9FF}]/gu, "");
+
+                // Remove ratings and year
+                cleaned = cleaned.replace(/\s*\(\d{4}\)\s*$/, ""); // Remove year (e.g. (2024))
+                cleaned = cleaned.replace(/\s*\(\d{1,2}(\.\d)?\)\s*$/, ""); // Remove rating in parens (e.g. (5), (9.5))
+                cleaned = cleaned.replace(/\s*\d{1,2}(\.\d)?\s*\/\s*10\s*$/, ""); // Remove X/10 rating (e.g. 8/10)
+
+                cleaned = cleaned.replace(/\s*-\s*.+$/, ""); // Remove details after dash
+
+                if (cleaned.trim().length > 0) {
+                    dramas.push(cleaned.trim());
+                }
+            });
         });
 
         return dramas;
@@ -171,7 +193,7 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
             // Simulate uncertain matches (demo)
             if (dramas.length > 15) { // Just a dummy condition for demo
                 setUncertainMatches([
-                    { input: dramas[dramas.length - 1], suggestion: "Lovely Runner" }
+                    { input: dramas[dramas.length - 1], suggestion: "Love Scout" }
                 ]);
             }
 
@@ -312,46 +334,29 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
                     <textarea
                         value={inputText}
                         onChange={handleTextChange}
-                        placeholder={`📝 Paste your drama list here...\n\nTry any format:\n- Lovely Runner\n- When the Phone Rings\n- 1. The Judge From Hell\n- • Squid Game Season 2`}
+                        placeholder={`Paste your drama list here...\n\nFor example:\nMercy For None\nBon Appetit, Your Majesty\nTaxi Driver Season 3\n\nLearn more about accepted formats below.`}
                         className="w-full rounded-2xl p-6 font-sans text-[18px] resize-none focus:outline-none transition-all placeholder:text-text-primary/40 focus:ring-2 focus:ring-accent-10"
                         style={{
                             backgroundColor: colors.inputBg,
                             color: colors.text,
                             border: `2px solid ${colors.border}`,
-                            minHeight: "300px", // Reduced slightly to make room
+                            minHeight: "300px",
                             maxHeight: "500px"
                         }}
                     />
-                    <div className="mt-3 flex items-center justify-between">
-                        <div className="flex flex-col gap-1">
-                            <p className="font-sans font-medium text-[14px]" style={{ color: colors.text, opacity: 0.6 }}>
-                                ✓ Bullets, numbers, plain text—all work
-                            </p>
-                        </div>
-                        {dramaCount > 0 && (
-                            <motion.p
-                                className="font-sans font-bold text-[16px]"
-                                style={{ color: colors.border }}
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                            >
-                                {dramaCount} drama{dramaCount !== 1 ? "s" : ""} detected
-                            </motion.p>
-                        )}
-                    </div>
                 </motion.div>
 
                 {/* Divider */}
-                <div className="flex items-center gap-4 mb-6">
+                {/* <div className="flex items-center gap-4 mb-6">
                     <div className="flex-1 h-px" style={{ backgroundColor: colors.text, opacity: 0.2 }} />
                     <p className="font-sans font-bold text-[14px]" style={{ color: colors.text, opacity: 0.5 }}>
                         OR IMPORT FILE
                     </p>
                     <div className="flex-1 h-px" style={{ backgroundColor: colors.text, opacity: 0.2 }} />
-                </div>
+                </div> */}
 
-                {/* File Upload */}
-                <motion.div
+                {/* File Upload - TEMPORARILY DISABLED*/}
+                {/* <motion.div
                     className="mb-8 rounded-2xl p-8 text-center cursor-pointer transition-all border-2 border-dashed group"
                     style={{
                         backgroundColor: colors.dropzoneBg,
@@ -367,7 +372,7 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
                 >
                     <Upload className="size-12 mx-auto mb-3 transition-colors group-hover:text-accent-10" style={{ color: colors.border }} />
                     <p className="font-heading font-bold text-[18px] mb-2" style={{ color: colors.text }}>
-                        📄 Drop a file here or click to browse
+                        Click to browse your files
                     </p>
                     <p className="font-sans font-medium text-[14px]" style={{ color: colors.text, opacity: 0.6 }}>
                         Accepted: TXT, CSV, XLSX • Max size: 5MB
@@ -379,18 +384,18 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
                         onChange={handleFileSelect}
                         className="hidden"
                     />
-                </motion.div>
+                </motion.div> */}
 
                 {/* Format Examples */}
                 <motion.div
                     className="mb-8 rounded-2xl overflow-hidden"
-                    style={{ backgroundColor: showExamples ? colors.exampleBg : "transparent" }}
+                    style={{ backgroundColor: 'var(--vibe-150)' }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.5 }}
                 >
                     <button
-                        className="w-full flex items-center justify-between p-4 transition-all hover:bg-black/5 rounded-2xl"
+                        className="w-full flex items-center justify-between p-4 transition-all hover:bg-black/5 text-left rounded-2xl"
                         onClick={() => setShowExamples(!showExamples)}
                         style={{ color: colors.text }}
                     >
@@ -408,70 +413,57 @@ export default function InputFlow({ onComplete, theme }: InputFlowProps) {
                                 animate={{ height: "auto", opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
                             >
-                                <p className="font-sans font-medium text-[16px] mb-4" style={{ color: colors.text }}>
-                                    All of these formats work perfectly:
+                                <p className="font-sans font-medium text-[14px] mb-4 text-left" style={{ color: colors.text }}>
+                                    All of these formats work well:
                                 </p>
 
-                                <div className="space-y-4 font-sans font-medium text-[14px]" style={{ color: colors.text }}>
+                                <div className="space-y-4 font-sans font-medium text-[14px] text-left" style={{ color: colors.text }}>
+                                    <div>
+                                        <p className="font-bold mb-2">✓ Comma separated:</p>
+                                        <p className="ml-4 opacity-80">Love Scout, When Life Gives You Tangerines, Dear X</p>
+                                    </div>
                                     <div>
                                         <p className="font-bold mb-2">✓ Simple list:</p>
-                                        <p className="ml-4 opacity-80">Lovely Runner<br />When the Phone Rings<br />The Judge From Hell</p>
+                                        <p className="ml-4 opacity-80">Love Scout<br />When Life Gives You Tangerines<br />Dear X</p>
                                     </div>
                                     <div>
                                         <p className="font-bold mb-2">✓ With bullets:</p>
-                                        <p className="ml-4 opacity-80">- Lovely Runner<br />- When the Phone Rings<br />• The Judge From Hell</p>
+                                        <p className="ml-4 opacity-80">- Love Scout<br />- When Life Gives You Tangerines<br />• Dear X</p>
                                     </div>
                                     <div>
                                         <p className="font-bold mb-2">✓ Numbered:</p>
-                                        <p className="ml-4 opacity-80">1. Lovely Runner<br />2. When the Phone Rings<br />3. The Judge From Hell</p>
+                                        <p className="ml-4 opacity-80">1. Love Scout<br />2. When Life Gives You Tangerines<br />3. Dear X</p>
+                                    </div>
+                                    <div>
+                                        <p className="font-bold mb-2">✓ With ratings:</p>
+                                        <p className="ml-4 opacity-80">Love Scout (5)<br />When Life Gives You Tangerines ⭐<br />Dear X 8/10</p>
                                     </div>
                                 </div>
-
-                                <p className="font-sans font-medium text-[14px] mt-6" style={{ color: colors.text, opacity: 0.8 }}>
-                                    💡 Tip: Copy directly from your notes, MyDramaList, or spreadsheet!
+                                <p className="font-sans font-medium text-[14px] mt-6 text-left" style={{ color: colors.text, opacity: 0.8 }}>
+                                    <span className="font-bold">Note:</span> Uploads with ratings will be processed but ratings will not be used.
                                 </p>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </motion.div>
 
-                {/* Privacy Note */}
-                <motion.div
-                    className="mb-8 text-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                >
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                        <Lock className="size-5" style={{ color: colors.text, opacity: 0.6 }} />
-                        <p className="font-sans font-bold text-[16px]" style={{ color: colors.text, opacity: 0.7 }}>
-                            Your data stays private
-                        </p>
-                    </div>
-                    <p className="font-sans font-medium text-[14px]" style={{ color: colors.text, opacity: 0.6 }}>
-                        We don&apos;t store your drama list. We just analyze it to create your Wrapped, then forget it.
-                    </p>
-                </motion.div>
-
                 {/* CTA Button */}
-                <motion.button
-                    className="w-full rounded-full py-5 font-heading font-black tracking-tight text-[24px] shadow-xl transition-all"
-                    style={{
-                        backgroundColor: isValid ? colors.buttonBg : colors.border,
-                        color: colors.buttonText,
-                        opacity: isValid ? 1 : 0.5,
-                        cursor: isValid ? "pointer" : "not-allowed"
-                    }}
+                <motion.div
+                    className="w-full flex justify-center"
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: isValid ? 1 : 0.5, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.7 }}
-                    whileHover={isValid ? { scale: 1.02, y: -2, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1)" } : {}}
-                    whileTap={isValid ? { scale: 0.98 } : {}}
-                    onClick={handleGenerate}
-                    disabled={!isValid}
                 >
-                    {isValid ? "Generate My Wrapped →" : "Fill details to continue"}
-                </motion.button>
+                    <PrimaryButton
+                        onClick={handleGenerate}
+                        disabled={!isValid}
+                        className={`w-full justify-center text-xl md:text-2xl font-heading font-black tracking-tight py-5 ${isValid ? 'bg-text-primary' : 'bg-secondary-20'
+                            }`}
+                        showIcon={isValid}
+                    >
+                        {isValid ? "Continue" : "Fill details to continue"}
+                    </PrimaryButton>
+                </motion.div>
             </motion.div>
         </div>
     );
@@ -488,8 +480,6 @@ function LoadingScreen({ step }: { step: number }) {
     const steps = [
         "Parsing your list...",
         "Finding your dramas...",
-        "Calculating insights...",
-        "Creating your Wrapped..."
     ];
 
     const progress = ((step + 1) / steps.length) * 100;
@@ -584,7 +574,7 @@ function ConfirmationScreen({
                     <motion.h1
                         className="font-heading font-black tracking-tight text-5xl mb-2"
                     >
-                        We found {dramas.length} dramas!
+                        We found {dramas.length} entries!
                     </motion.h1>
                     <p className="font-sans font-medium text-[18px] opacity-70">
                         Review your list before generating your Wrapped
@@ -597,20 +587,20 @@ function ConfirmationScreen({
                         {dramas.slice(0, 10).map((drama, index) => (
                             <motion.div
                                 key={index}
-                                className="flex items-center gap-3 p-3 rounded-xl bg-seed-40/30"
+                                className="flex items-center gap-3 p-3 rounded-xl bg-seed-50/25"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.05 }}
                             >
-                                <CheckCircle className="size-5 shrink-0 text-seed-50" />
+                                <CheckCircle className="size-5 shrink-0 text-seed-40" />
                                 <p className="font-sans font-medium text-[16px]">
                                     {drama}
                                 </p>
                             </motion.div>
                         ))}
-                        {dramas.length > 10 && (
+                        {dramas.length > 50 && (
                             <p className="font-sans font-medium text-[14px] text-center py-2 opacity-60">
-                                ... and {dramas.length - 10} more
+                                ... and {dramas.length - 50} more
                             </p>
                         )}
                     </div>
@@ -656,7 +646,7 @@ function ConfirmationScreen({
                 {/* Action Buttons */}
                 <div className="flex gap-4">
                     <motion.button
-                        className="flex-1 rounded-full py-4 font-bold text-[18px] border-2 border-secondary-20 transition-all hover:bg-secondary-20/10"
+                        className="flex-1 rounded-full py-4 font-bold text-[16px] border-2 border-secondary-20 transition-all hover:bg-secondary-20/10"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={onBack}
@@ -664,7 +654,7 @@ function ConfirmationScreen({
                         ← Edit List
                     </motion.button>
                     <motion.button
-                        className="flex-1 rounded-full py-4 font-heading font-bold text-[20px] shadow-xl transition-all bg-accent-10 text-white"
+                        className="flex-2 rounded-full py-4 font-heading font-bold text-[16px] shadow-md transition-all bg-text-primary text-white"
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={onConfirm}
