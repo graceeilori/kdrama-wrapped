@@ -1,8 +1,9 @@
-export type Theme = 'standard' | 'dark-romance' | 'sage-calm';
+export type Theme = 'daylight' | 'midnight';
 
 export interface ThemeConfig {
     name: string;
     label: string;
+    image: string;
     colors: {
         '--bg-primary': string;
         '--text-primary': string;
@@ -55,9 +56,10 @@ export interface ThemeConfig {
 }
 
 export const themes: Record<Theme, ThemeConfig> = {
-    standard: {
-        name: 'standard',
-        label: 'Standard',
+    daylight: {
+        name: 'daylight',
+        label: 'Daylight',
+        image: '/assets/theme-daylight.png',
         colors: {
             '--bg-primary': '#FBF9EF', // life
             '--text-primary': '#201C24', // trigger
@@ -108,66 +110,14 @@ export const themes: Record<Theme, ThemeConfig> = {
             '--vibe-150': '#F4E1E1',
         },
     },
-    'dark-romance': {
-        name: 'dark-romance',
-        label: 'Dark Romance',
+    midnight: {
+        name: 'midnight',
+        label: 'Midnight',
+        image: '/assets/theme-midnight-temp.png',
         colors: {
             '--bg-primary': '#1a0510',
             '--text-primary': '#ffe4e6',
             '--accent-10': '#e11d48',
-            "--primary-10": "",
-            "--primary-20": "",
-            "--primary-30": "",
-            "--primary-40": "",
-            "--primary-50": "",
-            "--secondary-10": "",
-            "--secondary-20": "",
-            "--secondary-30": "",
-            "--accent-20": "",
-            "--accent-30": "",
-            "--neutral-10": "",
-            "--neutral-20": "",
-            "--neutral-30": "",
-            "--fragment-10": "",
-            "--fragment-20": "",
-            "--fragment-30": "",
-            "--fragment-40": "",
-            "--fragment-50": "",
-            "--fragment-60": "",
-            "--stat-10": "",
-            "--stat-20": "",
-            "--stat-30": "",
-            "--stat-40": "",
-            "--stat-50": "",
-            "--seed-10": "",
-            "--seed-20": "",
-            "--seed-30": "",
-            "--seed-40": "",
-            "--seed-50": "",
-            "--vibe-10": "",
-            "--vibe-20": "",
-            "--vibe-30": "",
-            "--vibe-40": "",
-            "--vibe-50": "",
-            "--vibe-60": "",
-            "--vibe-70": "",
-            "--vibe-80": "",
-            "--vibe-90": "",
-            "--vibe-100": "",
-            "--vibe-110": "",
-            "--vibe-120": "",
-            "--vibe-130": "",
-            "--vibe-140": "",
-            "--vibe-150": ""
-        },
-    },
-    'sage-calm': {
-        name: 'sage-calm',
-        label: 'Sage Calm',
-        colors: {
-            '--bg-primary': '#f0fdf4',
-            '--text-primary': '#14532d',
-            '--accent-10': '#16a34a',
             "--primary-10": "",
             "--primary-20": "",
             "--primary-30": "",
