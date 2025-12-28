@@ -2,6 +2,8 @@
 import DeviceGuard from '@/components/DeviceGuard';
 import { useState } from 'react';
 import { Theme, themes } from '@/lib/themes';
+import WrappedFlow from '@/components/WrappedFlow';
+import { IdentifiedDrama } from '@/app/actions';
 import InputFlow, { PageState } from '@/components/InputFlow';
 import ThemeWrapper from '@/components/ThemeWrapper';
 import Image from 'next/image';
@@ -11,13 +13,26 @@ export default function CreatePage() {
     // State to store the user's preferred theme for the FINAL wrapped result
     const [selectedTheme, setSelectedTheme] = useState<Theme>('daylight');
     const [flowState, setFlowState] = useState<PageState>('input');
+    const [wrappedData, setWrappedData] = useState<{ dramas: IdentifiedDrama[]; topDramas: IdentifiedDrama[] } | null>(null);
 
     return (
         <DeviceGuard>
             <ThemeWrapper theme="daylight">
                 <main className="min-h-screen w-full relative overflow-x-hidden bg-bg-primary text-text-primary">
+                    {/* Render Wrapped Flow if data exists */}
+                    {/* Render Wrapped Flow if data exists */}
+                    {wrappedData && (
+                        <div className="fixed inset-0 z-50">
+                            <WrappedFlow
+                                dramas={wrappedData.dramas}
+                                topDramas={wrappedData.topDramas}
+                                onBack={() => setWrappedData(null)}
+                            />
+                        </div>
+                    )}
 
-                    <div className={`relative z-10 w-full max-w-4xl mx-auto px-5 py-12 flex flex-col items-center text-center ${flowState !== 'input' ? 'min-h-screen justify-center' : ''}`}>
+                    {/* Input Flow - Keep mounted but hide when wrapped is showing */}
+                    <div className={`relative z-10 w-full max-w-4xl mx-auto px-5 py-12 flex flex-col items-center text-center ${flowState !== 'input' ? 'min-h-screen justify-center' : ''} ${wrappedData ? 'hidden' : ''}`}>
 
                         {/* Header */}
                         {flowState === 'input' && (
@@ -61,10 +76,7 @@ export default function CreatePage() {
                             theme="daylight"
                             onStateChange={setFlowState}
                             onComplete={(dramas, topDramas) => {
-                                console.log("Generating with theme:", selectedTheme);
-                                console.log("Dramas:", dramas);
-                                console.log("Top 3:", topDramas);
-                                // TODO: Navigate to generation or handle data
+                                setWrappedData({ dramas, topDramas });
                             }}
                         />
 

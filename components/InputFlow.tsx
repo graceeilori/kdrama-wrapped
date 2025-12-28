@@ -350,7 +350,7 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
                     <textarea
                         value={inputText}
                         onChange={handleTextChange}
-                        placeholder={`Paste your drama list here...\n\nFor example:\nMercy For None\nBon Appetit, Your Majesty\nTaxi Driver Season 3\n\nLearn more about accepted formats below.`}
+                        placeholder={`Paste your drama list here...\n\nFor example:\nMercy For None\nBon Appetit, Your Majesty\nOur Unwritten Seoul\n\nLearn more about accepted formats below.`}
                         className="w-full rounded-2xl p-6 font-sans text-[18px] resize-none focus:outline-none transition-all placeholder:text-text-primary/40 focus:ring-2 focus:ring-accent-10"
                         style={{
                             backgroundColor: colors.inputBg,

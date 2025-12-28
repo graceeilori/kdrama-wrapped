@@ -33,9 +33,24 @@ export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[
 
             const searchResults = await searchSeries(query);
 
-            // Sort by year descending (2025 -> 2024 -> ...)
-            // Prioritize recent releases as requested
+            // Normalization helper: lowercase + remove all non-alphanumeric chars
+            const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+            const normalizedQuery = normalize(query);
+
+            // Sort results:
+            // 1. Exact Title Match (Highest Priority)
+            // 2. Recent Release Date (Secondary Priority)
             searchResults.sort((a, b) => {
+                const nameA = normalize(a.name);
+                const nameB = normalize(b.name);
+
+                const exactA = nameA === normalizedQuery;
+                const exactB = nameB === normalizedQuery;
+
+                if (exactA && !exactB) return -1; // A comes first
+                if (!exactA && exactB) return 1;  // B comes first
+
+                // If both are exact or both are NOT exact, sort by newest date
                 const dateA = a.first_air_date || "0000";
                 const dateB = b.first_air_date || "0000";
                 return dateB.localeCompare(dateA);
@@ -44,11 +59,8 @@ export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[
             const bestMatch = searchResults.length > 0 ? searchResults[0] : null;
 
             if (bestMatch) {
-                // Normalization helper: lowercase + remove all non-alphanumeric chars (punctuation/spaces)
-                const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
-
                 // Compare cleaned query (e.g. "squidgame") with result ("squidgame")
-                const normalizedInput = normalize(query);
+                const normalizedInput = normalizedQuery;
                 const normalizedMatch = normalize(bestMatch.name);
 
                 // Check if it's an exact match (ignoring case & punctuation)
