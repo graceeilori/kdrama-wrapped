@@ -2,14 +2,15 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Lock, ChevronDown, ChevronUp, AlertCircle, CheckCircle, X, Trophy } from "lucide-react";
+import { Upload, Lock, ChevronDown, ChevronUp, AlertCircle, CheckCircle, X, Trophy, Trash2 } from "lucide-react";
 import { Theme } from "@/lib/themes";
 import PrimaryButton from "@/components/PrimaryButton";
+import { identifyDramas, IdentifiedDrama } from "@/app/actions";
 
 export type PageState = "input" | "loading" | "confirmation";
 
 interface InputFlowProps {
-    onComplete?: (dramas: string[], topDramas: string[]) => void;
+    onComplete?: (dramas: IdentifiedDrama[], topDramas: IdentifiedDrama[]) => void;
     onStateChange?: (state: PageState) => void;
     theme: Theme;
 }
@@ -20,19 +21,20 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
     const [inputText, setInputText] = useState("");
     const [showExamples, setShowExamples] = useState(false);
     const [error, setError] = useState<ErrorType>(null);
+    const [confirmError, setConfirmError] = useState<string | null>(null);
     const [pageState, setPageState] = useState<PageState>("input");
 
     useEffect(() => {
         onStateChange?.(pageState);
     }, [pageState, onStateChange]);
+
     const [loadingStep, setLoadingStep] = useState(0);
-    const [parsedDramas, setParsedDramas] = useState<string[]>([]);
-    const [uncertainMatches, setUncertainMatches] = useState<Array<{ input: string; suggestion: string }>>([]);
+    // Store rich objects instead of just strings
+    const [parsedDramas, setParsedDramas] = useState<IdentifiedDrama[]>([]);
+    const [uncertainMatches, setUncertainMatches] = useState<Array<{ input: string; suggestion: string; data?: IdentifiedDrama }>>([]);
 
     // Top 3 Dramas State
     const [topDramas, setTopDramas] = useState<[string, string, string]>(["", "", ""]);
-
-    // const fileInputRef = useRef<HTMLInputElement>(null);
 
     const colors = {
         bg: "var(--bg-primary)",
@@ -62,45 +64,6 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
         setTopDramas(newTopDramas);
         setError(null);
     };
-
-    // const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = e.target.files?.[0];
-    //     if (!file) return;
-
-    //     // Check file size (5MB)
-    //     if (file.size > 5 * 1024 * 1024) {
-    //         setError("file-too-large");
-    //         return;
-    //     }
-
-    //     // Check file type
-    //     const validTypes = [".txt", ".csv", ".xlsx"];
-    //     const fileExt = file.name.substring(file.name.lastIndexOf("."));
-    //     if (!validTypes.includes(fileExt.toLowerCase())) {
-    //         setError("invalid-file");
-    //         return;
-    //     }
-
-    //     // Read file
-    //     const reader = new FileReader();
-    //     reader.onload = (event) => {
-    //         const text = event.target?.result as string;
-    //         setInputText(text);
-    //         setError(null);
-    //     };
-    //     reader.readAsText(file);
-    // };
-
-    // const handleDrop = useCallback((e: React.DragEvent) => {
-    //     e.preventDefault();
-    //     const file = e.dataTransfer.files[0];
-    //     if (file) {
-    //         const fakeEvent = {
-    //             target: { files: [file] }
-    //         } as unknown as React.ChangeEvent<HTMLInputElement>;
-    //         handleFileSelect(fakeEvent);
-    //     }
-    // }, []);
 
     const parseDramas = (text: string): string[] => {
         if (!text.trim()) return [];
@@ -139,12 +102,23 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
         return dramas;
     };
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
         let dramas = parseDramas(inputText);
 
         // Validate Top 3
         if (topDramas.some(d => !d.trim())) {
             setError("missing-top3");
+            return;
+        }
+
+        // Check for duplicates in Top 3
+        const uniqueTop3 = new Set(topDramas.map(d => d.trim().toLowerCase()));
+        if (uniqueTop3.size < 3) {
+            // Re-using error state with custom message (hacky but works for now)
+            setError(null);
+            // We need a new error type or alert for this, but let's just alert for now or set a custom error
+            // Modifying ErrorType definition locally would be best
+            alert("Your Top 3 list contains duplicates! Please ensure each drama is unique.");
             return;
         }
 
@@ -173,38 +147,77 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
         // Start loading
         setPageState("loading");
         setError(null);
+        setConfirmError(null);
 
-        // Simulate loading steps
-        const steps = [
-            { delay: 500, step: 0 },
-            { delay: 1000, step: 1 },
-            { delay: 1500, step: 2 },
-            { delay: 2000, step: 3 },
-        ];
+        // Progress simulation
+        setLoadingStep(0);
+        const interval = setInterval(() => {
+            setLoadingStep(prev => prev < 3 ? prev + 1 : prev);
+        }, 800);
 
-        steps.forEach(({ delay, step }) => {
-            setTimeout(() => setLoadingStep(step), delay);
-        });
+        try {
+            const results = await identifyDramas(dramas);
+            clearInterval(interval);
 
-        // Show confirmation screen
-        setTimeout(() => {
-            setParsedDramas(dramas);
+            const found = results.filter(r => r.found && r.title);
+            const hidden = results.filter(r => !r.found);
 
-            // Simulate uncertain matches (demo)
-            if (dramas.length > 15) { // Just a dummy condition for demo
-                setUncertainMatches([
-                    { input: dramas[dramas.length - 1], suggestion: "Love Scout" }
-                ]);
+            if (found.length === 0 && hidden.length === 0) {
+                setError("no-dramas");
+                setPageState("input");
+                return;
             }
+
+            setParsedDramas(found);
+
+            // Map unfound items to uncertain matches
+            const missing = hidden.map(r => ({
+                input: r.input,
+                suggestion: r.suggestion || "",
+                // We need to store the FULL result data to use it later if suggested
+                data: r
+            }));
+            setUncertainMatches(missing);
 
             setPageState("confirmation");
             setLoadingStep(0);
-        }, 2500);
+        } catch (e) {
+            console.error(e);
+            clearInterval(interval);
+            setError("no-dramas");
+            setPageState("input");
+        }
     };
 
     const handleConfirm = () => {
+        setConfirmError(null);
         if (onComplete) {
-            onComplete(parsedDramas, topDramas);
+            // Check if user still has uncertain matches (blocker)
+            if (uncertainMatches.length > 0) {
+                setConfirmError("Please resolve all unmatched items before continuing.");
+                return;
+            }
+
+            // Resolve Top 3 objects
+            const top3Objects = topDramas.map(name => {
+                const normalized = name.toLowerCase().trim();
+                // Find in our found results
+                // We loosen the match to check both input and resolved title
+                return parsedDramas.find(d =>
+                    d.input.toLowerCase().trim() === normalized ||
+                    (d.title && d.title.toLowerCase().trim() === normalized)
+                );
+            });
+
+            // STRICT CHECK: Ensure all Top 3 are actually found/valid
+            // If any is undefined, it means it was removed or never found
+            if (top3Objects.some(d => !d)) {
+                setConfirmError("One or more of your Top 3 dramas could not be verified or was removed. Please go back and enter a valid drama.");
+                return;
+            }
+
+            // Cast to ensure TS is happy, we filtered out undefined above
+            onComplete(parsedDramas, top3Objects as IdentifiedDrama[]);
         }
     };
 
@@ -221,14 +234,16 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
     };
 
     const handleUsesuggestion = (index: number) => {
-        const match = uncertainMatches[index];
-        const newDramas = [...parsedDramas];
-        const dramaIndex = newDramas.findIndex(d => d === match.input);
-        if (dramaIndex !== -1) {
-            newDramas[dramaIndex] = match.suggestion;
-            setParsedDramas(newDramas);
+        const item = uncertainMatches[index];
+        if (item.data) {
+            // Add to parsed dramas with found=true (implied by accepted suggestion)
+            const acceptedDrama = { ...item.data, found: true };
+            const newParsed = [...parsedDramas, acceptedDrama];
+            setParsedDramas(newParsed);
+
+            // Remove from uncertain
+            handleRemoveUncertain(index);
         }
-        handleRemoveUncertain(index);
     };
 
     if (pageState === "loading") {
@@ -244,6 +259,7 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
                 onConfirm={handleConfirm}
                 onRemoveUncertain={handleRemoveUncertain}
                 onUseSuggestion={handleUsesuggestion}
+                error={confirmError}
             />
         );
     }
@@ -346,46 +362,6 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
                     />
                 </motion.div>
 
-                {/* Divider */}
-                {/* <div className="flex items-center gap-4 mb-6">
-                    <div className="flex-1 h-px" style={{ backgroundColor: colors.text, opacity: 0.2 }} />
-                    <p className="font-sans font-bold text-[14px]" style={{ color: colors.text, opacity: 0.5 }}>
-                        OR IMPORT FILE
-                    </p>
-                    <div className="flex-1 h-px" style={{ backgroundColor: colors.text, opacity: 0.2 }} />
-                </div> */}
-
-                {/* File Upload - TEMPORARILY DISABLED*/}
-                {/* <motion.div
-                    className="mb-8 rounded-2xl p-8 text-center cursor-pointer transition-all border-2 border-dashed group"
-                    style={{
-                        backgroundColor: colors.dropzoneBg,
-                        borderColor: colors.border
-                    }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    whileHover={{ scale: 1.02 }}
-                    onClick={() => fileInputRef.current?.click()}
-                    onDrop={handleDrop}
-                    onDragOver={(e) => e.preventDefault()}
-                >
-                    <Upload className="size-12 mx-auto mb-3 transition-colors group-hover:text-accent-10" style={{ color: colors.border }} />
-                    <p className="font-heading font-bold text-[18px] mb-2" style={{ color: colors.text }}>
-                        Click to browse your files
-                    </p>
-                    <p className="font-sans font-medium text-[14px]" style={{ color: colors.text, opacity: 0.6 }}>
-                        Accepted: TXT, CSV, XLSX • Max size: 5MB
-                    </p>
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".txt,.csv,.xlsx"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                    />
-                </motion.div> */}
-
                 {/* Format Examples */}
                 <motion.div
                     className="mb-8 rounded-2xl overflow-hidden"
@@ -480,6 +456,8 @@ function LoadingScreen({ step }: { step: number }) {
     const steps = [
         "Parsing your list...",
         "Finding your dramas...",
+        "Calculating insights...",
+        "Creating your Wrapped..."
     ];
 
     const progress = ((step + 1) / steps.length) * 100;
@@ -536,12 +514,13 @@ function LoadingScreen({ step }: { step: number }) {
 
 // Confirmation Screen Component
 interface ConfirmationScreenProps {
-    dramas: string[];
+    dramas: IdentifiedDrama[];
     uncertainMatches: Array<{ input: string; suggestion: string }>;
     onBack: () => void;
     onConfirm: () => void;
     onRemoveUncertain: (index: number) => void;
     onUseSuggestion: (index: number) => void;
+    error: string | null;
 }
 
 function ConfirmationScreen({
@@ -550,7 +529,8 @@ function ConfirmationScreen({
     onBack,
     onConfirm,
     onRemoveUncertain,
-    onUseSuggestion
+    onUseSuggestion,
+    error
 }: ConfirmationScreenProps) {
     const colors = {
         bg: "var(--bg-primary)",
@@ -563,18 +543,18 @@ function ConfirmationScreen({
     };
 
     return (
-        <div className="w-full flex flex-col items-center justify-center py-12">
+        <div className="w-full flex flex-col items-center justify-center py-8">
             <motion.div
                 className="w-full max-w-2xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
                 {/* Title */}
-                <div className="text-center mb-8">
+                <div className="text-center mb-4">
                     <motion.h1
                         className="font-heading font-black tracking-tight text-5xl mb-2"
                     >
-                        We found {dramas.length} entries!
+                        We found {dramas.length} dramas!
                     </motion.h1>
                     <p className="font-sans font-medium text-[18px] opacity-70">
                         Review your list before generating your Wrapped
@@ -584,7 +564,7 @@ function ConfirmationScreen({
                 {/* Matched Dramas */}
                 <div className="mb-6 rounded-3xl p-6 max-h-[400px] overflow-y-auto bg-white/5 border border-white/10">
                     <div className="space-y-3">
-                        {dramas.slice(0, 10).map((drama, index) => (
+                        {dramas.slice(0, 50).map((drama, index) => (
                             <motion.div
                                 key={index}
                                 className="flex items-center gap-3 p-3 rounded-xl bg-seed-50/25"
@@ -593,9 +573,14 @@ function ConfirmationScreen({
                                 transition={{ delay: index * 0.05 }}
                             >
                                 <CheckCircle className="size-5 shrink-0 text-seed-40" />
-                                <p className="font-sans font-medium text-[16px]">
-                                    {drama}
-                                </p>
+                                <div className="text-left">
+                                    <p className="font-sans font-medium text-[16px]">
+                                        {drama.title || drama.input}
+                                    </p>
+                                    {drama.year && (
+                                        <p className="text-xs opacity-50">{drama.year}</p>
+                                    )}
+                                </div>
                             </motion.div>
                         ))}
                         {dramas.length > 50 && (
@@ -611,36 +596,62 @@ function ConfirmationScreen({
                     <div className="mb-6 rounded-3xl p-6 bg-white/5 border border-white/10 backdrop-blur-sm">
                         <p className="font-bold text-[16px] mb-4 flex items-center gap-2">
                             <AlertCircle className="size-5 text-stat-50" />
-                            Couldn&apos;t match:
+                            Couldn&apos;t match {uncertainMatches.length} entr{uncertainMatches.length === 1 ? 'y' : 'ies'}:
+                        </p>
+                        <p className="text-sm opacity-60 mb-4 text-left">
+                            We couldn&apos;t find these in the database. You can remove them or go back to edit your list.
                         </p>
                         <div className="space-y-4">
                             {uncertainMatches.map((match, index) => (
                                 <div
                                     key={index}
-                                    className="p-4 rounded-xl bg-stat-40/20"
+                                    className="p-4 rounded-xl bg-stat-40/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                                 >
-                                    <p className="font-medium text-[14px] mb-3">
-                                        &quot;{match.input}&quot; (typo?)<br />
-                                        <span style={{ opacity: 0.7 }}>Did you mean: <strong>{match.suggestion}</strong>?</span>
-                                    </p>
-                                    <div className="flex gap-2">
+                                    <div className="flex-1 text-left">
+                                        <p className="font-medium text-[16px]">
+                                            {match.input}
+                                        </p>
+                                        {match.suggestion && (
+                                            <p className="text-sm mt-1 opacity-70">
+                                                Did you mean: <strong>{match.suggestion}</strong>?
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="flex gap-2 shrink-0">
+                                        {match.suggestion && (
+                                            <button
+                                                className="px-4 py-2 rounded-full font-semibold text-[14px] transition-all bg-accent-10 text-white"
+                                                onClick={() => onUseSuggestion(index)}
+                                            >
+                                                Use {match.suggestion}
+                                            </button>
+                                        )}
                                         <button
-                                            className="px-4 py-2 rounded-full font-semibold text-[14px] transition-all bg-accent-10 text-white"
-                                            onClick={() => onUseSuggestion(index)}
-                                        >
-                                            Use This
-                                        </button>
-                                        <button
-                                            className="px-4 py-2 rounded-full font-semibold text-[14px] transition-all border-2 border-accent-10"
+                                            className="p-2 rounded-full transition-all hover:bg-white/10 text-primary-50 hover:text-red-400"
                                             onClick={() => onRemoveUncertain(index)}
+                                            title="Remove"
                                         >
-                                            Remove
+                                            <Trash2 className="size-5" />
                                         </button>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
+                )}
+
+                {/* Validation Error */}
+                {error && (
+                    <motion.div
+                        className="mb-4 text-left"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                    >
+                        <p className="text-red-400 font-bold text-sm bg-red-400/10 py-2 px-4 rounded-lg inline-block">
+                            {error}
+                        </p>
+                    </motion.div>
                 )}
 
                 {/* Action Buttons */}
@@ -654,12 +665,16 @@ function ConfirmationScreen({
                         ← Edit List
                     </motion.button>
                     <motion.button
-                        className="flex-2 rounded-full py-4 font-heading font-bold text-[16px] shadow-md transition-all bg-text-primary text-white"
-                        whileHover={{ scale: 1.02, y: -2 }}
-                        whileTap={{ scale: 0.98 }}
+                        className={`flex-2 rounded-full py-4 font-heading font-bold text-[16px] shadow-md transition-all ${uncertainMatches.length > 0
+                            ? 'bg-secondary-10 text-white cursor-not-allowed'
+                            : 'bg-text-primary text-white'
+                            }`}
+                        whileHover={uncertainMatches.length > 0 ? {} : { scale: 1.02, y: -2 }}
+                        whileTap={uncertainMatches.length > 0 ? {} : { scale: 0.98 }}
                         onClick={onConfirm}
+                        disabled={uncertainMatches.length > 0}
                     >
-                        Generate Wrapped →
+                        {uncertainMatches.length > 0 ? "Resolve Items First" : "Generate Wrapped →"}
                     </motion.button>
                 </div>
             </motion.div>
