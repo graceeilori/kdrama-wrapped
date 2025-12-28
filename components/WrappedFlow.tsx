@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { IdentifiedDrama } from "@/app/actions";
+import { EnrichedDrama } from "@/app/actions";
 import { AnimatePresence, motion } from "framer-motion";
 import Slide1Intro from "./Wrapped/Slide1Intro";
 import Slide2Stats from "./Wrapped/Slide2Stats";
@@ -12,8 +12,8 @@ import Slide6Vibe from "./Wrapped/Slide6Vibe";
 import Slide7Summary from "./Wrapped/Slide7Summary";
 
 interface WrappedFlowProps {
-    dramas: IdentifiedDrama[];
-    topDramas: IdentifiedDrama[];
+    dramas: EnrichedDrama[];
+    topDramas: EnrichedDrama[];
     onBack: () => void;
 }
 
@@ -36,12 +36,15 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
         setCurrentSlide(1);
     };
 
-    // Placeholder Logic for Stats until we have real API data
+    // Real Stats Calculation
     const dramaCount = dramas.length;
-    // Estimate: 16 episodes per drama
-    const episodeCount = dramaCount * 16;
-    // Estimate: 70 min per episode -> ~1.2 hours
-    const totalHours = Math.round(episodeCount * 1.17);
+
+    // Sum episodes. Default to 16 if missing to avoid showing 0.
+    const episodeCount = dramas.reduce((acc, drama) => acc + (drama.episodeCount || 16), 0);
+
+    // Sum runtime. Default to 16 * 60 (16 hrs) if missing.
+    const totalMinutes = dramas.reduce((acc, drama) => acc + (drama.totalRuntime || (16 * 60)), 0);
+    const totalHours = Math.round(totalMinutes / 60);
 
     // Scroll (Wheel) Navigation
     useEffect(() => {

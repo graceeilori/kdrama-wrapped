@@ -3,31 +3,42 @@ import DeviceGuard from '@/components/DeviceGuard';
 import { useState } from 'react';
 import { Theme, themes } from '@/lib/themes';
 import WrappedFlow from '@/components/WrappedFlow';
-import { IdentifiedDrama } from '@/app/actions';
+import { IdentifiedDrama, EnrichedDrama, enrichDramas } from '@/app/actions';
 import InputFlow, { PageState } from '@/components/InputFlow';
 import ThemeWrapper from '@/components/ThemeWrapper';
 import Image from 'next/image';
-import { Palette } from 'lucide-react';
+import { Palette, Loader2 } from 'lucide-react';
 
 export default function CreatePage() {
     // State to store the user's preferred theme for the FINAL wrapped result
     const [selectedTheme, setSelectedTheme] = useState<Theme>('daylight');
     const [flowState, setFlowState] = useState<PageState>('input');
-    const [wrappedData, setWrappedData] = useState<{ dramas: IdentifiedDrama[]; topDramas: IdentifiedDrama[] } | null>(null);
+    const [wrappedData, setWrappedData] = useState<{ dramas: EnrichedDrama[]; topDramas: EnrichedDrama[] } | null>(null);
+    const [isGenerating, setIsGenerating] = useState(false);
 
     return (
         <DeviceGuard>
             <ThemeWrapper theme="daylight">
                 <main className="min-h-screen w-full relative overflow-x-hidden bg-bg-primary text-text-primary">
                     {/* Render Wrapped Flow if data exists */}
-                    {/* Render Wrapped Flow if data exists */}
                     {wrappedData && (
                         <div className="fixed inset-0 z-50">
                             <WrappedFlow
                                 dramas={wrappedData.dramas}
                                 topDramas={wrappedData.topDramas}
-                                onBack={() => setWrappedData(null)}
+                                onBack={() => {
+                                    setWrappedData(null);
+                                    setIsGenerating(false);
+                                }}
                             />
+                        </div>
+                    )}
+
+                    {/* Loading Overlay */}
+                    {isGenerating && !wrappedData && (
+                        <div className="fixed inset-0 z-[60] bg-bg-primary/90 flex flex-col items-center justify-center animate-in fade-in duration-300">
+                            <Loader2 className="w-12 h-12 text-accent-30 animate-spin mb-4" />
+                            <h2 className="font-heading text-2xl animate-pulse">Analyzing your K-Drama journey...</h2>
                         </div>
                     )}
 
@@ -75,8 +86,18 @@ export default function CreatePage() {
                         <InputFlow
                             theme="daylight"
                             onStateChange={setFlowState}
-                            onComplete={(dramas, topDramas) => {
-                                setWrappedData({ dramas, topDramas });
+                            onComplete={async (dramas, topDramas) => {
+                                setIsGenerating(true);
+                                try {
+                                    // 1. Enrich ALL dramas
+                                    const enrichedDramas = await enrichDramas(dramas);
+                                    const enrichedTop = await enrichDramas(topDramas);
+
+                                    setWrappedData({ dramas: enrichedDramas, topDramas: enrichedTop });
+                                } catch (error) {
+                                    console.error("Failed to generate wrapped", error);
+                                    setIsGenerating(false);
+                                }
                             }}
                         />
 

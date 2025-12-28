@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Tv, PlayCircle, Clock } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface Slide2StatsProps {
     dramaCount: number;
