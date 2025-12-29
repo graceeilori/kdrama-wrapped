@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { EnrichedDrama } from "@/app/actions";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Heart, Tv, Laugh, Skull, Sparkles, Sword, Coffee, Activity, Gavel, GraduationCap, Theater, AlertTriangle, User } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getTopGenres, CustomGenre } from "@/lib/genre-mapping";
 
 interface Slide3GenresProps {
