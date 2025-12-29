@@ -1,40 +1,72 @@
 "use client";
 
+import { useMemo } from "react";
+import { EnrichedDrama } from "@/app/actions";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Heart, Tv, Laugh, Skull, Sparkles, Sword, Coffee, Activity, Gavel, GraduationCap, Theater, AlertTriangle, User } from "lucide-react";
+import { getTopGenres, CustomGenre } from "@/lib/genre-mapping";
 
 interface Slide3GenresProps {
+    dramas: EnrichedDrama[];
     onNext: () => void;
     onPrev: () => void;
 }
 
-// Placeholder Genre Data
-const genres = [
-    { name: "Romance", percent: 55, color: "#F4C2C2", tailwindBg: "bg-[#F4C2C2]" }, // Pastel Pink
-    { name: "Slice of Life", percent: 25, color: "#E7A8A8", tailwindBg: "bg-[#E7A8A8]" }, // Muted Coral
-    { name: "Comedy", percent: 10, color: "#A8BBE7", tailwindBg: "bg-[#A8BBE7]" }, // Periwinkle
-    { name: "Thriller", percent: 7, color: "#8CD4D8", tailwindBg: "bg-[#8CD4D8]" }, // Teal
-    { name: "Saeguk", percent: 3, color: "#E7A77B", tailwindBg: "bg-[#E7A77B]" }, // Terracotta
-];
+// Map Genres to Icons and Colors
+const GENRE_CONFIG: Record<CustomGenre, { imgSrc?: string, bg: string }> = {
+    "Romance": { imgSrc: "/assets/slide3-genre-icon-romance.svg", bg: "bg-primary-20" },
+    "Sci-Fi": { imgSrc: "/assets/slide3-genre-icon-sci.svg", bg: "bg-[#D0D5FB]" },
+    "Comedy": { imgSrc: "/assets/slide3-genre-icon-comedy.svg", bg: "bg-[#FBE5D0]" },
+    "Thriller": { imgSrc: "/assets/slide3-genre-icon-thriller.svg", bg: "bg-[#EFDCDC]" },
+    "Fantasy": { imgSrc: "/assets/slide3-genre-icon-fantasy.svg", bg: "bg-[#F0D0FB]" },
+    "Action": { imgSrc: "/assets/slide3-genre-icon-action.svg", bg: "bg-[#E1E3D5]" },
+    "Historical": { imgSrc: "/assets/slide3-genre-icon-historical.svg", bg: "bg-[#F2EFD9]" },
+    "Slice of Life": { imgSrc: "/assets/slide3-genre-icon-sol.svg", bg: "bg-[#EEFDF4]" },
+    "Melodrama": { imgSrc: "/assets/slide3-genre-icon-melodrama.svg", bg: "bg-[#EEEEEE]" },
+    "Medical": { imgSrc: "/assets/slide3-genre-icon-med.svg", bg: "bg-[#E6E5E5]" },
+    "Legal": { imgSrc: "/assets/slide3-genre-icon-legal.svg", bg: "bg-[#FDEEF1]" },
+    "School": { imgSrc: "/assets/slide3-genre-icon-school.svg", bg: "bg-[#F7EEFD]" },
+    "Youth": { imgSrc: "/assets/slide3-genre-icon-youth.svg", bg: "bg-[#D1F4FA]" },
+    "Drama": { imgSrc: "/assets/slide3-genre-icon-drama.svg", bg: "bg-[#D8DAF3]" },
+};
 
-export default function Slide3Genres({ onNext, onPrev }: Slide3GenresProps) {
-    // Calculate Conic Gradient for Pie Chart
-    let accumulatedPercent = 0;
-    const gradientStops = genres.map(g => {
-        const start = accumulatedPercent;
-        accumulatedPercent += g.percent;
-        return `${g.color} ${start}% ${accumulatedPercent}%`;
-    }).join(", ");
+const getGenreConfig = (genre: CustomGenre) => {
+    return GENRE_CONFIG[genre] || GENRE_CONFIG["Drama"];
+};
 
-    const conicGradient = `conic-gradient(${gradientStops})`;
+export default function Slide3Genres({ dramas, onNext, onPrev }: Slide3GenresProps) {
+
+    // Aggregation Logic
+    const topGenres = useMemo(() => {
+        const counts: Record<string, number> = {};
+        dramas.forEach(drama => {
+            const genres = getTopGenres(drama);
+            genres.forEach(g => {
+                counts[g] = (counts[g] || 0) + 1;
+            });
+        });
+
+        const sorted = Object.entries(counts)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 3)
+            .map(([name, count]) => ({
+                name: name as CustomGenre,
+                count
+            }));
+
+        // Normalize heights for bar chart
+        const maxCount = sorted[0]?.count || 1;
+        return sorted.map(g => ({
+            ...g,
+            heightPercent: (g.count / maxCount) * 100
+        }));
+    }, [dramas]);
 
     const container = {
         hidden: { opacity: 0 },
         show: {
             opacity: 1,
-            transition: {
-                staggerChildren: 0.1
-            }
+            transition: { staggerChildren: 0.1 }
         }
     };
 
@@ -45,62 +77,82 @@ export default function Slide3Genres({ onNext, onPrev }: Slide3GenresProps) {
 
     return (
         <motion.div
-            className="w-full h-full flex flex-col items-center justify-center relative p-6 min-h-screen bg-[#FFFBF5] overflow-hidden"
+            className="w-full h-full flex flex-col items-center justify-start relative px-6 pt-16 min-h-screen bg-bg-primary overflow-hidden"
             variants={container}
             initial="hidden"
             animate="show"
             exit={{ opacity: 0 }}
         >
-            {/* Title */}
-            <motion.div variants={itemVariant} className="mb-10 text-center relative z-10">
-                {/* Decorative Stars */}
-                <img src="/assets/star-sec10.svg" className="absolute -top-4 -left-12 w-8 h-8 opacity-70 rotate-[-15deg]" alt="" />
-                <img src="/assets/landing-sparkle.svg" className="absolute -bottom-2 -right-10 w-6 h-6 opacity-60" alt="" />
+            {/* Decorative Top Title */}
+            <motion.div variants={itemVariant} className="mb-12 text-center relative">
+                <div className="absolute -top-[1%] -left-8 opacity-70 -rotate-12">
+                    <img src="/assets/slide3-sparkle.svg" className="w-6 h-6" alt="" />
+                </div>
+                <div className="absolute -top-[1%] -right-8 opacity-70 rotate-[-12deg]">
+                    <img src="/assets/slide3-star.svg" className="w-8 h-8" alt="" />
+                </div>
+                <h1 className="font-accent text-6xl text-text-primary">Your Top <br /> Genres </h1>
 
-                <h1 className="font-accent text-5xl text-text-primary mb-2">Your Top</h1>
-                <h2 className="font-accent text-6xl text-text-primary">Genres</h2>
-            </motion.div>
-
-            {/* Pie Chart */}
-            <motion.div
-                className="relative w-64 h-64 rounded-full border-2 border-text-primary mb-12 shadow-inner"
-                style={{ background: conicGradient }}
-                initial={{ scale: 0, rotate: -90 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
-            >
-                {/* Inner White Circle (Donut hole optional, keeping full pie for now based on sketch) */}
-                {/* <div className="absolute inset-0 m-auto w-16 h-16 bg-[#FFFBF5] rounded-full" /> */}
-
-                {/* Optional: 'Others' label logic could go here if implemented specifically */}
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 text-[10px] font-sans text-text-primary/70 rotate-[15deg]">
-
+                <div className="absolute -bottom-3 -right-6 opacity-70 rotate-12">
+                    <img src="/assets/slide3-sparkle.svg" className="w-6 h-6" alt="" />
                 </div>
             </motion.div>
 
-            {/* Legend List */}
-            <div className="w-full max-w-xs flex flex-col gap-4">
-                {genres.map((g, i) => (
-                    <motion.div
-                        key={g.name}
-                        variants={itemVariant}
-                        className="flex items-center justify-between"
-                    >
-                        <div className="flex items-center gap-3">
-                            <span className="font-heading font-black text-3xl text-text-primary w-6">{i + 1}.</span>
-                            <span className="font-heading font-bold text-2xl text-text-primary">{g.name}</span>
-                        </div>
-                        <div className={`${g.tailwindBg} px-3 py-1 rounded-full border border-text-primary/10 shadow-sm min-w-[60px] text-center`}>
-                            <span className="font-accent text-lg text-text-primary">{g.percent}%</span>
-                        </div>
-                    </motion.div>
-                ))}
+            {/* Bar Chart Area */}
+            <div className="w-full max-w-[320px] h-64 flex items-end justify-center gap-6 mb-12 px-8 relative">
+                {/* Ground Line */}
+                <img src="/assets/slide3-chartline.svg" className="absolute bottom-[-2px] w-full z-[10]" alt="" />
+
+                {topGenres.map((g, i) => {
+                    const config = getGenreConfig(g.name);
+                    const isFirst = i === 0;
+
+                    return (
+                        <motion.div
+                            key={g.name}
+                            className={`w-20 rounded-t-lg relativer ${config.bg} `}
+                            initial={{ height: 0 }}
+                            animate={{ height: `${Math.max(g.heightPercent, 20)}%` }} // Min height 20% so text visible
+                            transition={{ type: "spring", stiffness: 60, delay: 0.3 + (i * 0.1) }}
+                        >
+                        </motion.div>
+                    );
+                })}
             </div>
 
+            {/* Ranked List */}
+            <div className="w-full max-w-xs flex flex-col gap-6">
+                {topGenres.map((g, i) => {
+                    const config = getGenreConfig(g.name);
+                    return (
+                        <motion.div
+                            key={g.name}
+                            variants={itemVariant}
+                            className="flex items-center justify-between"
+                        >
+                            <div className="flex items-center gap-3">
+                                <span className="font-heading font-bold text-4xl text-center text-text-primary w-12">{i + 1}.</span>
+                                <span className="font-heading font-bold text-4xl text-text-primary">{g.name}</span>
+                            </div>
+
+                            {/* Icon Tag */}
+                            <motion.div
+                                className={`${config.bg} w-18 h-12 rounded-full text-white flex items-center justify-center transform ${i === 0 ? 'rotate-12' : i === 1 ? '-rotate-2' : 'rotate-[-10deg]'}`}
+                                animate={{ scale: [1, 1.15, 1] }}
+                                transition={{ duration: 4, repeat: Infinity, repeatDelay: 2, ease: "easeInOut", delay: i * 0.6 }}
+                            >
+                                {config.imgSrc && (
+                                    <img src={config.imgSrc} alt={g.name} className="w-9 h-9 object-contain" />
+                                )}
+                            </motion.div>
+                        </motion.div>
+                    );
+                })}
+            </div>
 
             {/* Navigation Footer */}
             <motion.div
-                className="absolute bottom-12 w-full max-w-lg px-6 flex items-center justify-between"
+                className="relative w-full max-w-lg pt-6 flex items-center justify-between"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
@@ -111,11 +163,11 @@ export default function Slide3Genres({ onNext, onPrev }: Slide3GenresProps) {
 
                 <div className="flex gap-2">
                     {[...Array(7)].map((_, i) => (
-                        <div key={i} className={`h-1.5 rounded-full transition-all ${i === 3 ? 'w-6 bg-accent-30' : 'w-1.5 bg-black/10'}`} />
+                        <div key={i} className={`h-1.5 rounded-full transition-all ${i === 2 ? 'w-6 bg-accent-30' : 'w-1.5 bg-black/10'}`} />
                     ))}
                 </div>
 
-                <button onClick={onNext} className="w-12 h-12 bg-text-primary rounded-full flex items-center justify-center text-[#FFFBF5] hover:scale-105 transition-transform shadow-lg">
+                <button onClick={onNext} className="w-18 h-14 bg-text-primary rounded-full flex items-center justify-center text-bg-primary hover:scale-105 transition-transform shadow-md">
                     <ArrowRight size={24} />
                 </button>
             </motion.div>

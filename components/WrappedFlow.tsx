@@ -98,15 +98,16 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
                         onPrev={handlePrev}
                     />
                 )}
-                {/* SLIDE 3: Genres (Swapped) */}
+                {/* SLIDE 3: Genres */}
                 {currentSlide === 3 && (
                     <Slide3Genres
                         key="slide3"
+                        dramas={dramas}
                         onNext={handleNext}
                         onPrev={handlePrev}
                     />
                 )}
-                {/* SLIDE 4: Top Dramas (Swapped) */}
+                {/* SLIDE 4: Top Dramas */}
                 {currentSlide === 4 && (
                     <Slide4TopDramas
                         key="slide4"

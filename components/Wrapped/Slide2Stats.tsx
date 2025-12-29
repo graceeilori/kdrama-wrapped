@@ -131,7 +131,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
 
             {/* Navigation Footer */}
             <motion.div
-                className="relative w-full max-w-lg pt-4 flex items-center justify-between"
+                className="relative w-full max-w-lg pt-6 flex items-center justify-between"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
@@ -147,7 +147,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
                     ))}
                 </div>
 
-                <button onClick={onNext} className="w-16 h-12 bg-text-primary rounded-full flex items-center justify-center text-bg-primary hover:scale-105 transition-transform shadow-md">
+                <button onClick={onNext} className="w-18 h-14 bg-text-primary rounded-full flex items-center justify-center text-bg-primary hover:scale-105 transition-transform shadow-md">
                     <ArrowRight size={24} />
                 </button>
             </motion.div>
