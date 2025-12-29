@@ -20,6 +20,7 @@ export interface EnrichedDrama extends IdentifiedDrama {
     totalRuntime?: number; // total minutes (eps * runtime)
     genres?: string[];
     keywords?: string[];
+    cast?: { id: number; name: string; profilePath: string | null }[];
 }
 
 export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[]> {
@@ -170,7 +171,12 @@ export async function enrichDramas(dramas: IdentifiedDrama[]): Promise<EnrichedD
                 runtime: finalRuntime,
                 totalRuntime: finalEpisodeCount * finalRuntime,
                 genres: seriesDetails.genres?.map(g => g.name) || [],
-                keywords: seriesDetails.keywords?.results?.map(k => k.name) || []
+                keywords: seriesDetails.keywords?.results?.map(k => k.name) || [],
+                cast: seriesDetails.credits?.cast?.slice(0, 15).map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    profilePath: getPosterUrl(c.profile_path)
+                })) || []
             };
         })
     );

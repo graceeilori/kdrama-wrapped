@@ -74,8 +74,47 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
         return () => window.removeEventListener("wheel", handleWheel);
     }, [currentSlide]);
 
+    // Swipe Navigation
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+    const MIN_SWIPE_DISTANCE = 50;
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > MIN_SWIPE_DISTANCE;
+        const isRightSwipe = distance < -MIN_SWIPE_DISTANCE;
+
+        // Restriction: No swiping on Slide 1 (must use button)
+        if (currentSlide === 1) return;
+
+        if (isLeftSwipe) {
+            // Next
+            if (currentSlide < 7) handleNext();
+        }
+        if (isRightSwipe) {
+            // Prev
+            // Restriction: Cannot swipe back to Slide 1
+            if (currentSlide > 2) handlePrev();
+        }
+    };
+
     return (
-        <div className="w-full h-full min-h-screen bg-[#FFFBF5] text-text-primary overflow-hidden relative">
+        <div
+            className="w-full h-full min-h-screen bg-[#FFFBF5] text-text-primary overflow-hidden relative"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+        >
             {/* Temporary Back Button for Testing */}
             <button
                 onClick={onBack}
@@ -119,6 +158,7 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
                 {currentSlide === 5 && (
                     <Slide5FamiliarFace
                         key="slide5"
+                        dramas={dramas}
                         onNext={handleNext}
                         onPrev={handlePrev}
                     />

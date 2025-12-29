@@ -114,6 +114,14 @@ export async function getSeasonDetails(seriesId: number, seasonNumber: number): 
     }
 }
 
+export interface TMDBCastMember {
+    id: number;
+    name: string;
+    profile_path: string | null;
+    character: string;
+    order: number;
+}
+
 export interface TMDBSeriesDetails {
     id: number;
     name: string;
@@ -123,18 +131,21 @@ export interface TMDBSeriesDetails {
     keywords?: {
         results: { id: number; name: string }[];
     };
+    credits?: {
+        cast: TMDBCastMember[];
+    };
 }
 
 export async function getSeriesDetails(seriesId: number): Promise<TMDBSeriesDetails | null> {
     if (!TMDB_API_KEY) return null;
 
     const isBearer = TMDB_API_KEY.length > 60;
-    // Append keywords to response to get everything in one go
+    // Append keywords and credits
     const url = new URL(`${TMDB_BASE_URL}/tv/${seriesId}`);
     if (!isBearer) {
         url.searchParams.append("api_key", TMDB_API_KEY);
     }
-    url.searchParams.append("append_to_response", "keywords");
+    url.searchParams.append("append_to_response", "keywords,credits");
     url.searchParams.append("language", "en-US");
 
     const headers: HeadersInit = { "Content-Type": "application/json" };
