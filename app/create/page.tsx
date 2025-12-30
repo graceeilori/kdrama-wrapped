@@ -1,10 +1,10 @@
 'use client';
 import DeviceGuard from '@/components/DeviceGuard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Theme, themes } from '@/lib/themes';
 import WrappedFlow from '@/components/WrappedFlow';
 import { IdentifiedDrama, EnrichedDrama, enrichDramas } from '@/app/actions';
-import InputFlow, { PageState } from '@/components/InputFlow';
+import InputFlow, { PageState, LoadingScreen } from '@/components/InputFlow';
 import ThemeWrapper from '@/components/ThemeWrapper';
 import Image from 'next/image';
 import { Palette, Loader2 } from 'lucide-react';
@@ -15,6 +15,22 @@ export default function CreatePage() {
     const [flowState, setFlowState] = useState<PageState>('input');
     const [wrappedData, setWrappedData] = useState<{ dramas: EnrichedDrama[]; topDramas: EnrichedDrama[] } | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [loadingStep, setLoadingStep] = useState(0);
+
+    const GENERATION_STEPS = [
+        "Analyzing your watch list...",
+        "Creating your Wrapped..."
+    ];
+
+    useEffect(() => {
+        if (isGenerating) {
+            setLoadingStep(0);
+            const timer = setTimeout(() => {
+                setLoadingStep(1);
+            }, 2500);
+            return () => clearTimeout(timer);
+        }
+    }, [isGenerating]);
 
     return (
         <DeviceGuard>
@@ -34,11 +50,10 @@ export default function CreatePage() {
                         </div>
                     )}
 
-                    {/* Loading Overlay */}
+                    {/* Loading Screen */}
                     {isGenerating && !wrappedData && (
-                        <div className="fixed inset-0 z-[60] bg-bg-primary/90 flex flex-col items-center justify-center animate-in fade-in duration-300">
-                            <Loader2 className="w-12 h-12 text-accent-30 animate-spin mb-4" />
-                            <h2 className="font-heading text-2xl animate-pulse">Analyzing your K-Drama journey...</h2>
+                        <div className="fixed inset-0 z-[60] bg-bg-primary flex items-center justify-center animate-in fade-in duration-300">
+                            <LoadingScreen step={loadingStep} customSteps={GENERATION_STEPS} />
                         </div>
                     )}
 

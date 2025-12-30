@@ -46,7 +46,7 @@ const vibeConfig: Record<VibeType, {
         label: "#healingsoul",
         image: "/assets/slide6-vibe-healing.svg",
         color: "#B08FD6", // var(--vibe-20)
-        bgColor: "#CBE7B1", // var(--seed-40)
+        bgColor: "#EF4F93", // var(--vibe-40)
         vibeIcon: "/assets/slide6-icon-leaf.svg"
     },
     romantic: {
@@ -60,7 +60,7 @@ const vibeConfig: Record<VibeType, {
         label: "#timetraveler",
         image: "/assets/slide6-vibe-traveler.svg",
         color: "#D8C08D", // var(--vibe-80)
-        bgColor: "#F5F5FF",
+        bgColor: "#F49C71", // var(--fragment-60)
         vibeIcon: "/assets/slide6-icon-hourglass.svg"
     }
 };
@@ -91,33 +91,37 @@ const SummaryCard = forwardRef<HTMLDivElement, SummaryCardProps>(function Summar
 
             {/* Vibe */}
             <div className="flex flex-col items-center mb-20 relative">
-                <div className="relative w-120 h-120 mb-12">
+                <div className="relative w-120 h-120 mb-8">
                     <img src={vibe.image} alt={vibe.label} className="w-full h-full object-contain relative z-10" />
                 </div>
                 <h3 className="font-accent text-7xl" style={{ color: vibe.color }}>{vibe.label}</h3>
             </div>
 
             {/* Stats Bar */}
-            <div className="w-full rounded-full px-12 py-8 flex justify-between items-center text-white mb-18" style={{ backgroundColor: vibe.bgColor }}>
-                <div className="flex flex-col items-center flex-1 gap-2">
-                    <span className="font-heading font-black text-7xl mb-1">{stats.dramaCount}</span>
-                    <span className="text-3xl font-semibold tracking-widest opacity-90">Dramas</span>
-                    <Image src="/assets/summary-tv.svg" alt=" " width={65} height={65} className="absolute bottom-[820px] left-[124px]" />
-                </div>
-                <div className="flex flex-col items-center flex-1 gap-2">
-                    <span className="font-heading font-black text-7xl mb-1">{stats.episodeCount}</span>
-                    <span className="text-3xl font-semibold tracking-widest opacity-90">Episodes</span>
-                    <Image src="/assets/summary-play.svg" alt=" " width={61} height={61} className="absolute bottom-[780px] left-[610px] translate-y-4 transform rotate-[28deg]" />
-                </div>
-                <div className="flex flex-col items-center flex-1 gap-2">
-                    <span className="font-heading font-black text-7xl mb-1">{stats.totalHours}</span>
-                    <span className="text-3xl font-semibold tracking-widest opacity-90">Hours</span>
-                    <Image src="/assets/summary-clock.svg" alt=" " width={68} height={68} className="absolute bottom-[860px] right-[116px]" />
+            <div className="w-full h-[176px] rounded-full mb-18" style={{ backgroundColor: vibe.bgColor }}>
+                <div className="w-full h-[176px] absolute top-[49.5%] left-0">
+                    <div className="absolute top-0 left-0 h-full w-1/3 flex flex-col items-center p-2 justify-center text-center gap-2">
+                        <div className="font-heading font-bold text-7xl text-[#FFFFFF] mb-1 w-full text-center block">{stats.dramaCount}</div>
+                        <div className="text-3xl font-semibold text-[#FFFFFF] w-full text-center block">Dramas</div>
+                    </div>
+                    <div className="absolute top-0 left-1/3 h-full w-1/3 flex flex-col items-center p-2 justify-center text-center gap-2">
+                        <div className="font-heading font-bold text-7xl text-[#FFFFFF] mb-1 w-full text-center block">{stats.episodeCount}</div>
+                        <div className="text-3xl font-semibold text-[#FFFFFF] w-full text-center block">Episodes</div>
+                    </div>
+                    <div className="absolute top-0 left-2/3 h-full w-1/3 flex flex-col items-center p-2 justify-center text-center gap-2">
+                        <div className="font-heading font-bold text-7xl text-[#FFFFFF] mb-1 w-full text-center block">{stats.totalHours}</div>
+                        <div className="text-3xl font-semibold text-[#FFFFFF] w-full text-center block">Hours</div>
+                    </div>
                 </div>
             </div>
 
+            {/* <Image src="/assets/summary-tv.svg" alt=" " width={65} height={65} className="absolute bottom-[820px] left-[110px]" />
+            <Image src="/assets/summary-play.svg" alt=" " width={40} height={40} className="absolute bottom-[788px] left-[610px] translate-y-4 transform rotate-[28deg]" />
+            <Image src="/assets/summary-clock.svg" alt=" " width={68} height={68} className="absolute bottom-[860px] right-[110px]" /> */}
+
+
             {/* Bottom Grid: Top Dramas & Genres */}
-            <div className="w-full flex flex-row items-start justify-between gap-16 px-12 pb-24">
+            <div className="w-full flex flex-row items-start justify-between gap-16 px-8 pb-24">
 
                 {/* Top Dramas */}
                 <div className="flex flex-col justify-center">
@@ -140,7 +144,7 @@ const SummaryCard = forwardRef<HTMLDivElement, SummaryCardProps>(function Summar
                         </div>
 
                         {/* #1 - Center (Largest) */}
-                        <div className="relative w-80 aspect-[2/3] bg-gray-200 rounded-sm shadow-md overflow-hidden z-20 -translate-y-4">
+                        <div className="relative w-80 aspect-[2/3] bg-[#FFD700] rounded-sm shadow-md overflow-hidden z-20 -translate-y-4">
                             {safeTopDramas[0].posterUrl ? (
                                 <Image
                                     src={safeTopDramas[0].posterUrl}
@@ -156,7 +160,7 @@ const SummaryCard = forwardRef<HTMLDivElement, SummaryCardProps>(function Summar
                         </div>
 
                         {/* #3 - Right */}
-                        <div className="relative w-64 aspect-[2/3] bg-gray-200 rounded-sm shadow-sm overflow-hidden transform rotate-[3deg] z-10 translate-y-8">
+                        <div className="relative w-64 aspect-[2/3] bg-[#FFCC99] rounded-sm shadow-sm overflow-hidden transform rotate-[3deg] z-10 translate-y-8">
                             {safeTopDramas[2].posterUrl ? (
                                 <Image
                                     src={safeTopDramas[2].posterUrl}
@@ -180,7 +184,7 @@ const SummaryCard = forwardRef<HTMLDivElement, SummaryCardProps>(function Summar
                         {topGenres.map((g, i) => (
                             <div key={i} className="flex items-baseline gap-4">
                                 <span className="font-heading font-bold text-5xl w-12 text-center">{i + 1}.</span>
-                                <span className="font-heading font-bold text-5xl whitespace-nowrap overflow-hidden text-ellipsis max-w-md text-right">{g}</span>
+                                <span className="font-heading font-bold text-5xl whitespace-nowrap max-w-md text-right">{g}</span>
                             </div>
                         ))}
                     </div>

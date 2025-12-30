@@ -449,18 +449,16 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
 }
 
 // Loading Screen Component
-function LoadingScreen({ step }: { step: number }) {
+export function LoadingScreen({ step, customSteps }: { step: number; customSteps?: string[] }) {
     const colors = {
         bg: "var(--bg-primary)",
         text: "var(--text-primary)",
         accent: "var(--accent-10)",
     };
 
-    const steps = [
+    const steps = customSteps || [
         "Parsing your list...",
         "Finding your dramas...",
-        "Calculating insights...",
-        "Creating your Wrapped..."
     ];
 
     const progress = ((step + 1) / steps.length) * 100;

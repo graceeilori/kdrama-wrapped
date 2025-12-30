@@ -38,9 +38,16 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
 
     // Vibe Detection Logic
 
-    // 1. WANDERER - Diverse mix (8+ genres, no single dominant)
-    if (uniqueGenres >= 6 && topGenre.percentage < 35) {
-        return "wanderer";
+    // 0. HOPELESS ROMANTIC - Strict Dominance Rule
+    // "If Romance is 2x the 2nd top genre"
+    const romanceCountStrict = genreCounts.get("Romance") || 0;
+    const secondTopGenre = genreStats[1]; // Index 1 is the 2nd items since sorted desc
+
+    // Check if Romance is 2x the second genre (if second exists, otherwise if romance > 0 it's dominant anyway)
+    if (romanceCountStrict > 0) {
+        if (!secondTopGenre || romanceCountStrict >= (secondTopGenre.count * 2)) {
+            return "romantic";
+        }
     }
 
     // 2. TIME TRAVELER - Historical dominant (>35% or top genre or in Top 3)
@@ -50,17 +57,27 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
     }
 
     // 4. HEALING SOUL - Slice of Life/Medical/Youth
-    const healingGenres = ["Slice of Life", "Medical", "Youth", "Comedy"];
-    const healingCount = healingGenres.reduce((sum, g) => sum + (genreCounts.get(g as CustomGenre) || 0), 0);
-    const healingPercent = (healingCount / totalGenres) * 100;
 
-    // Boost chances if specific healing dramas are in Top 3
-    const healingDramas = ["When Life Gives You Tangerines", "Our Unwritten Seoul"];
-    const hasHealingFavorite = dramas.slice(0, 3).some(d => healingDramas.some(hd => (d.title || "").includes(hd)));
-    const healingThreshold = hasHealingFavorite ? 10 : 25;
+    // EXCLUSION: If "Thriller" is in top 3, never assign HEALING (per user request)
+    if (!top3Genres.includes("Thriller")) {
+        // Special Combo: Romance + Comedy + (Melodrama/Slice of Life) -> Healing
+        if (top3Genres.includes("Romance") && (top3Genres.includes("Youth") || top3Genres.includes("Medical")) &&
+            (top3Genres.includes("Melodrama") || top3Genres.includes("Slice of Life"))) {
+            return "healing";
+        }
 
-    if (healingPercent > healingThreshold || top3Genres.includes("Slice of Life") || top3Genres.includes("Medical")) {
-        return "healing";
+        const healingGenres = ["Slice of Life", "Medical", "Youth", "Comedy", "Romance"];
+        const healingCount = healingGenres.reduce((sum, g) => sum + (genreCounts.get(g as CustomGenre) || 0), 0);
+        const healingPercent = (healingCount / totalGenres) * 100;
+
+        // Boost chances if specific healing dramas are in Top 3
+        const healingDramas = ["When Life Gives You Tangerines", "Our Unwritten Seoul"];
+        const hasHealingFavorite = dramas.slice(0, 3).some(d => healingDramas.some(hd => (d.title || "").includes(hd)));
+        const healingThreshold = hasHealingFavorite ? 15 : 25;
+
+        if (healingPercent > healingThreshold || top3Genres.includes("Slice of Life") || top3Genres.includes("Medical")) {
+            return "healing";
+        }
     }
 
     // 3. DETECTIVE - Thriller/Mystery/Legal heavy
@@ -91,6 +108,11 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
 
     if (romanticPercent > 25 || topGenre.genre === "Romance") {
         return "romantic";
+    }
+
+    // 1. WANDERER - Diverse mix (8+ genres, no single dominant)
+    if (uniqueGenres >= 8 && topGenre.percentage < 35) {
+        return "wanderer";
     }
 
     // Final fallback

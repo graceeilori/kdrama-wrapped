@@ -35,7 +35,7 @@ const vibeConfig: Record<VibeType, {
         label: "#detective",
         descriptions: [
             "You're addicted to plot twists. This year was all about solving cases and watching justice unfold.",
-            "Trust issues? Maybe. But your deduction skills are top tier after watching this many suspects get caught.",
+            "Trust issues? Maybe. But your deduction skills are top tier after watching these many suspects get caught.",
             "The truth is out there, and you watched 16 episodes to find it. Plot twists don't shock you anymore."
         ],
         image: "/assets/slide6-vibe-detective.svg",

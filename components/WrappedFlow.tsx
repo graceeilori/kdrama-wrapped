@@ -48,81 +48,18 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
     const totalMinutes = dramas.reduce((acc, drama) => acc + (drama.totalRuntime || (16 * 60)), 0);
     const totalHours = Math.round(totalMinutes / 60);
 
-    // Scroll (Wheel) Navigation
-    useEffect(() => {
-        let lastScrollTime = 0;
-        const SCROLL_COOLDOWN = 800; // ms
-
-        const handleWheel = (e: WheelEvent) => {
-            const now = Date.now();
-            if (now - lastScrollTime < SCROLL_COOLDOWN) return;
-
-            if (e.deltaY > 0) {
-                // Scroll Down -> Next
-                if (currentSlide < 7) { // Max slides currently 7
-                    handleNext();
-                    lastScrollTime = now;
-                }
-            } else if (e.deltaY < 0) {
-                // Scroll Up -> Prev
-                if (currentSlide > 1) {
-                    handlePrev();
-                    lastScrollTime = now;
-                }
-            }
-        };
-
-        window.addEventListener("wheel", handleWheel);
-        return () => window.removeEventListener("wheel", handleWheel);
-    }, [currentSlide]);
-
-    // Swipe Navigation
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
-    const MIN_SWIPE_DISTANCE = 50;
-
-    const onTouchStart = (e: React.TouchEvent) => {
-        setTouchEnd(null);
-        setTouchStart(e.targetTouches[0].clientX);
-    };
-
-    const onTouchMove = (e: React.TouchEvent) => {
-        setTouchEnd(e.targetTouches[0].clientX);
-    };
-
-    const onTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
-        const distance = touchStart - touchEnd;
-        const isLeftSwipe = distance > MIN_SWIPE_DISTANCE;
-        const isRightSwipe = distance < -MIN_SWIPE_DISTANCE;
-
-        // Restriction: No swiping on Slide 1 (must use button)
-        if (currentSlide === 1) return;
-
-        if (isLeftSwipe) {
-            // Next
-            if (currentSlide < 7) handleNext();
-        }
-        if (isRightSwipe) {
-            // Prev
-            // Restriction: Cannot swipe back to Slide 1
-            if (currentSlide > 2) handlePrev();
-        }
-    };
+    // Scroll and Swipe removed per user request
 
     return (
         <div
             className="w-full h-full min-h-screen bg-[#FFFBF5] text-text-primary overflow-hidden relative"
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
         >
             {/* Temporary Back Button for Testing */}
             <button
                 onClick={onBack}
-                className="absolute top-4 left-4 z-50 bg-black/10 hover:bg-black/20 text-text-primary px-3 py-1 rounded-full text-sm font-bold backdrop-blur-sm"
+                className="absolute top-4 right-4 z-50 bg-black/10 hover:bg-black/20 text-text-primary px-3 py-1 rounded-full text-sm font-bold backdrop-blur-sm"
             >
-                ← Exit Testing
+                Exit Testing →
             </button>
 
             <AnimatePresence mode="wait">
