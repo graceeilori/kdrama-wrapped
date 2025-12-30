@@ -31,6 +31,8 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
 
     // Get top genre
     const topGenre = genreStats[0];
+    if (!topGenre) return "romantic"; // Fallback if no data
+
     const top3Genres = genreStats.slice(0, 3).map(g => g.genre);
     const uniqueGenres = genreStats.length;
 

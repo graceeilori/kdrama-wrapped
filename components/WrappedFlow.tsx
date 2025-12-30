@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { EnrichedDrama } from "@/app/actions";
+import { calculateVibe } from "@/lib/vibe-calculator"; // Import vibe logic
+import { getTopGenres } from "@/lib/genre-mapping"; // Import genre logic
 import { AnimatePresence, motion } from "framer-motion";
 import Slide1Intro from "./Wrapped/Slide1Intro";
 import Slide2Stats from "./Wrapped/Slide2Stats";
@@ -176,6 +178,23 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
                         key="slide7"
                         dramas={dramas}
                         topDramas={topDramas}
+                        stats={{
+                            dramaCount,
+                            episodeCount,
+                            totalHours
+                        }}
+                        vibe={calculateVibe(dramas)}
+                        topGenres={(() => {
+                            const allGenres = dramas.flatMap(d => getTopGenres(d));
+                            const genreCounts = allGenres.reduce((acc, g) => {
+                                acc[g] = (acc[g] || 0) + 1;
+                                return acc;
+                            }, {} as Record<string, number>);
+                            return Object.entries(genreCounts)
+                                .sort((a, b) => b[1] - a[1])
+                                .slice(0, 3)
+                                .map(([g]) => g);
+                        })()}
                         onPrev={handlePrev}
                         onReplay={handleReplay} // Pass replay handler
                     />

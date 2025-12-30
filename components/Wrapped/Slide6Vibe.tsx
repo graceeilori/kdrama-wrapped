@@ -24,7 +24,7 @@ const vibeConfig: Record<VibeType, {
         descriptions: [
             "You explored every genre this year. Romance, thriller, comedy, historical, you refused to be boxed in.",
             "A little bit of this, a little bit of that. Your watchlist is as diverse as a buffet plate at a wedding.",
-            "Genre? What genre? You just want a good story, and you'll go anywhere, be it the past, present, or future—to find it."
+            "Genre? What genre? You just want a good story, and you'll go anywhere, be it the past, present, or future to find it."
         ],
         image: "/assets/slide6-vibe-wanderer.svg",
         color: "var(--vibe-140)",
