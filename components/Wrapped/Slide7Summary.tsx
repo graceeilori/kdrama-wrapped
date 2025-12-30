@@ -90,7 +90,7 @@ export default function Slide7Summary({ dramas, topDramas, stats, vibe, topGenre
                         K
                     </Link>
                     <div className="font-accent text-3xl text-text-primary text-center">
-                        {generatedImage ? "Ready to Share!" : "Your Summary..."}
+                        {generatedImage ? "Ready to Download!" : "Your Summary..."}
                     </div>
                 </div>
 
