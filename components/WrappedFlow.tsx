@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { EnrichedDrama } from "@/app/actions";
 import { calculateVibe } from "@/lib/vibe-calculator"; // Import vibe logic
 import { getTopGenres } from "@/lib/genre-mapping"; // Import genre logic
 import { AnimatePresence, motion } from "framer-motion";
+import { Volume2, VolumeX } from "lucide-react";
 import Slide1Intro from "./Wrapped/Slide1Intro";
 import Slide2Stats from "./Wrapped/Slide2Stats";
 import Slide3Genres from "./Wrapped/Slide3Genres";
@@ -21,8 +22,46 @@ interface WrappedFlowProps {
 
 export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowProps) {
     const [currentSlide, setCurrentSlide] = useState(1);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const [isMuted, setIsMuted] = useState(false);
+    const [hasInteracted, setHasInteracted] = useState(false);
+
+    useEffect(() => {
+        // Attempt autoplay on mount
+        const audio = audioRef.current;
+        if (audio) {
+            audio.volume = 0.3; // Specific volume level
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Auto-play was prevented
+                    setIsMuted(true);
+                });
+            }
+        }
+    }, []);
+
+    const toggleMute = () => {
+        const audio = audioRef.current;
+        if (audio) {
+            if (isMuted) {
+                audio.muted = false;
+                audio.play().catch(() => { });
+            } else {
+                audio.muted = true;
+            }
+            setIsMuted(!isMuted);
+        }
+    };
 
     const handleNext = () => {
+        // Ensure audio is playing on first interaction
+        if (!hasInteracted && audioRef.current) {
+            audioRef.current.muted = false;
+            audioRef.current.play().catch(() => { });
+            setIsMuted(false);
+            setHasInteracted(true);
+        }
         setCurrentSlide(prev => prev + 1);
     };
 
@@ -50,16 +89,66 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
 
     // Scroll and Swipe removed per user request
 
+    // Swipe Logic
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    // Minimum swipe distance
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null); // Reset
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        // User requested swiping between slides 2-7.
+        // We will allow it generally for better UX, but handlePrev already checks for slide 1 boundaries.
+
+        if (isLeftSwipe) {
+            // Next Slide
+            // Prevent swiping past the last slide (7)
+            if (currentSlide < 7) {
+                handleNext();
+            }
+        } else if (isRightSwipe) {
+            // Prev Slide
+            // Allow swiping back from 2 to 1, but maybe restrict if strictly "between 2-7"
+            // Interpreting "between 2-7" as the range where navigation is most active.
+            // Swipe right on slide 2 -> slide 1 is likely desired.
+            if (currentSlide > 1) {
+                handlePrev();
+            }
+        }
+    };
+
     return (
         <div
             className="w-full h-full min-h-screen bg-[#FFFBF5] text-text-primary overflow-hidden relative"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
         >
-            {/* Temporary Back Button for Testing */}
+            {/* Soundtrack */}
+            <audio ref={audioRef} src="/han-river-chill-436915.mp3" loop />
+
+            {/* Mute Toggle */}
             <button
-                onClick={onBack}
-                className="absolute top-4 right-4 z-50 bg-black/10 hover:bg-black/20 text-text-primary px-3 py-1 rounded-full text-sm font-bold backdrop-blur-sm"
+                onClick={toggleMute}
+                className="absolute top-6 right-6 z-50 p-3 bg-white/50 backdrop-blur-md rounded-full text-text-primary hover:bg-white/80 transition-all border border-white/20"
+                aria-label={isMuted ? "Unmute" : "Mute"}
             >
-                Exit Testing →
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
             </button>
 
             <AnimatePresence mode="wait">

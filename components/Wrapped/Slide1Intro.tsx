@@ -119,6 +119,15 @@ export default function Slide1Intro({ onNext }: Slide1IntroProps) {
                 >
                     View
                 </motion.button>
+
+                <motion.p
+                    className="font-accent text-lg mt-2 opacity-70 select-none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.3 }}
+                    transition={{ delay: 2.5, duration: 1 }}
+                >
+                    or swipe to start →
+                </motion.p>
             </div>
         </div>
     );

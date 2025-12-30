@@ -33,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${bricolage.variable} ${reenie.variable} font-sans antialiased`}>
+      <body suppressHydrationWarning className={`${inter.variable} ${bricolage.variable} ${reenie.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>
