@@ -6,8 +6,6 @@ import WrappedFlow from '@/components/WrappedFlow';
 import { IdentifiedDrama, EnrichedDrama, enrichDramas } from '@/app/actions';
 import InputFlow, { PageState, LoadingScreen } from '@/components/InputFlow';
 import ThemeWrapper from '@/components/ThemeWrapper';
-import Image from 'next/image';
-import { Palette, Loader2 } from 'lucide-react';
 
 export default function CreatePage() {
     // State to store the user's preferred theme for the FINAL wrapped result
@@ -59,7 +57,6 @@ export default function CreatePage() {
 
                     {/* Input Flow - Keep mounted but hide when wrapped is showing */}
                     <div className={`relative z-10 w-full max-w-4xl mx-auto px-5 py-12 flex flex-col items-center text-center ${flowState !== 'input' ? 'min-h-screen justify-center' : ''} ${wrappedData ? 'hidden' : ''}`}>
-
                         {/* Header */}
                         {flowState === 'input' && (
                             <div className="mb-8">

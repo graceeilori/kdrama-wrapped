@@ -65,6 +65,13 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
         }
     }
 
+    // 1. WANDERER - Diverse mix (8+ genres, no single dominant)
+    // Boost for high volume watchers (>30 dramas)
+    const wandererPercentageCap = dramas.length > 30 ? 45 : 35;
+    if (uniqueGenres >= 5 && topGenre.percentage < wandererPercentageCap) {
+        return "wanderer";
+    }
+
     // 2. TIME TRAVELER - Historical dominant (>35% or top genre or in Top 3)
     const historicalPercent = genreCounts.get("Historical") || 0;
     if (topGenre.genre === "Historical" || top3Genres.includes("Historical") || (historicalPercent / totalGenres) * 100 > 35) {
@@ -74,7 +81,7 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
     // 4. HEALING SOUL - Slice of Life/Medical/Youth
 
     // EXCLUSION: If "Thriller" is in top 3, never assign HEALING
-    if (!top3Genres.includes("Thriller")) {
+    if (!top3Genres.includes("Thriller") || !top3Genres.includes("Action")) {
         // Special Combo: Romance + Comedy + (Melodrama/Slice of Life) -> Healing
         if (top3Genres.includes("Romance") && (top3Genres.includes("Youth") || top3Genres.includes("Medical")) &&
             (top3Genres.includes("Melodrama") || top3Genres.includes("Slice of Life"))) {
@@ -123,11 +130,6 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
 
     if (romanticPercent > 25 || topGenre.genre === "Romance") {
         return "romantic";
-    }
-
-    // 1. WANDERER - Diverse mix (8+ genres, no single dominant)
-    if (uniqueGenres >= 8 && topGenre.percentage < 35) {
-        return "wanderer";
     }
 
     // Final fallback
