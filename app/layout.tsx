@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next"
 import './globals.css';
 
 import { Inter, Bricolage_Grotesque, Reenie_Beanie } from 'next/font/google';
@@ -35,6 +36,7 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning className={`${inter.variable} ${bricolage.variable} ${reenie.variable} font-sans antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
