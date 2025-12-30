@@ -1,73 +1,94 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Footprints, Search, Flower2, Heart, Fan, Sparkles, Scale } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { EnrichedDrama } from "@/app/actions";
+import { calculateVibe, VibeType } from "@/lib/vibe-calculator";
 
 interface Slide6VibeProps {
+    dramas: EnrichedDrama[];
     onNext: () => void;
     onPrev: () => void;
 }
 
-type VibeType = "wanderer" | "detective" | "healing" | "romantic" | "time";
-
-// Mock Logic to select a vibe (random for now until we have stats)
-const getVibe = (): VibeType => {
-    const vibes: VibeType[] = ["wanderer", "detective", "healing", "romantic", "time"];
-    return vibes[Math.floor(Math.random() * vibes.length)];
-};
-
 const vibeConfig: Record<VibeType, {
     label: string;
-    description: string;
+    descriptions: string[];
+    image: string;
     color: string;
-    bg: string;
-    icon: React.ElementType;
-    subIcon?: React.ElementType;
+    sparkleImage: string;
+    vibeIcon: string;
 }> = {
     wanderer: {
         label: "#wanderer",
-        description: "You explored every genre this year. Romance, thriller, comedy, historical, you refused to be boxed in.",
-        color: "#E7A8A8", // Muted Coral
-        bg: "bg-[#E7A8A8]/20",
-        icon: Footprints,
-        subIcon: Sparkles
+        descriptions: [
+            "You explored every genre this year. Romance, thriller, comedy, historical, you refused to be boxed in.",
+            "A little bit of this, a little bit of that. Your watchlist is as diverse as a buffet plate at a wedding.",
+            "Genre? What genre? You just want a good story, and you'll go anywhere, be it the past, present, or future—to find it."
+        ],
+        image: "/assets/slide6-vibe-wanderer.svg",
+        color: "var(--vibe-140)",
+        sparkleImage: "/assets/slide6-sparkle-red.svg",
+        vibeIcon: "/assets/slide6-icon-wave.svg"
     },
     detective: {
         label: "#detective",
-        description: "You're addicted to plot twists. This year was all about solving cases and watching justice unfold.",
-        color: "#A8BBE7", // Periwinkle
-        bg: "bg-[#A8BBE7]/20",
-        icon: Search,
-        subIcon: Scale
+        descriptions: [
+            "You're addicted to plot twists. This year was all about solving cases and watching justice unfold.",
+            "Trust issues? Maybe. But your deduction skills are top tier after watching this many suspects get caught.",
+            "The truth is out there, and you watched 16 episodes to find it. Plot twists don't shock you anymore."
+        ],
+        image: "/assets/slide6-vibe-detective.svg",
+        color: "var(--vibe-110)",
+        sparkleImage: "/assets/slide6-sparkle-blue.svg",
+        vibeIcon: "/assets/slide6-icon-scale.svg"
     },
     healing: {
         label: "#healingsoul",
-        description: "Slow burns, daily stories, and characters healing were your comfort zone.",
-        color: "#BEE9E4", // Teal-ish
-        bg: "bg-[#BEE9E4]/30",
-        icon: Flower2
+        descriptions: [
+            "Slow burns, daily stories, and characters healing were your comfort zone.",
+            "You came for the vibes and stayed for the comfort. No stress, just soft lighting and warm hugs.",
+            "While everyone else wanted drama, you chose peace. Green flags and gentle plots only."
+        ],
+        image: "/assets/slide6-vibe-healing.svg",
+        color: "var(--vibe-20)",
+        sparkleImage: "/assets/slide6-sparkle-purple.svg",
+        vibeIcon: "/assets/slide6-icon-leaf.svg"
     },
     romantic: {
         label: "#hopelessromantic",
-        description: "Your heart lives in rom-coms. You believe in fate, coincidence, and love at first sight.",
-        color: "#F4C2C2", // Pastel Pink
-        bg: "bg-[#F4C2C2]/20",
-        icon: Heart,
-        subIcon: Heart // Use Heart again for subIcon
+        descriptions: [
+            "Your heart lives in rom-coms. You believe in fate, coincidence, and love at first sight.",
+            "You're just a romantic, standing in front of a screen, asking it to give you a fictional soulmate.",
+            "The back hugs, the umbrella scenes, the slow motion staring... you ate it all up. Zero regrets."
+        ],
+        image: "/assets/slide6-vibe-hopeless.svg",
+        color: "var(--vibe-50)",
+        sparkleImage: "/assets/slide6-sparkle-pink.svg",
+        vibeIcon: "/assets/slide6-icon-heart.svg"
     },
     time: {
         label: "#timetraveler",
-        description: "The past called, and you answered. Modern dramas couldn't compete.",
-        color: "#E7A77B", // Terracotta
-        bg: "bg-[#E7A77B]/20",
-        icon: Fan
+        descriptions: [
+            "The past called, and you answered. Modern dramas couldn't compete.",
+            "Hanboks look better than hoodies anyway. You spent more time in the Joseon era than 2025.",
+            "Royal politics and forbidden love. Why live in the present when the past is this dramatic?"
+        ],
+        image: "/assets/slide6-vibe-traveler.svg",
+        color: "var(--vibe-80)",
+        sparkleImage: "/assets/slide6-sparkle-gold.svg",
+        vibeIcon: "/assets/slide6-icon-hourglass.svg"
     }
 };
 
-export default function Slide6Vibe({ onNext, onPrev }: Slide6VibeProps) {
-    // Determine vibe (Static for demo, normally passed as prop)
-    const currentVibeKey: VibeType = "romantic"; // Force one for consistent review, or use getVibe()
+export default function Slide6Vibe({ dramas, onNext, onPrev }: Slide6VibeProps) {
+    // Calculate vibe based on user's dramas
+    const currentVibeKey: VibeType = calculateVibe(dramas);
     const vibe = vibeConfig[currentVibeKey];
+
+    // Select description variation based on stable seed (e.g., drama count)
+    const seed = dramas.length + (dramas[0]?.title?.length || 0);
+    const description = vibe.descriptions[seed % vibe.descriptions.length];
 
     const container = {
         hidden: { opacity: 0 },
@@ -86,53 +107,64 @@ export default function Slide6Vibe({ onNext, onPrev }: Slide6VibeProps) {
 
     return (
         <motion.div
-            className="w-full h-full flex flex-col items-center justify-center relative p-6 min-h-screen bg-[#FFFBF5] overflow-hidden"
+            className="w-full h-full flex flex-col items-center justify-start relative px-6 pt-16 min-h-screen bg-bg-primary overflow-hidden"
             variants={container}
             initial="hidden"
             animate="show"
             exit={{ opacity: 0 }}
         >
-            {/* Title */}
-            <motion.div variants={itemVariant} className="mb-10 text-center relative z-10">
-                {/* Decorative Stars */}
-                <img src="/assets/star-sec10.svg" className="absolute -top-2 left-0 w-6 h-6 rotate-[-15deg] text-accent-30" alt="" />
-                <img src="/assets/landing-sparkle.svg" className="absolute top-2 right-0 w-5 h-5 opacity-60" alt="" />
-
-                <h1 className="font-accent text-6xl text-text-primary">Your Vibe</h1>
+            {/* Decorative Top Title */}
+            <motion.div variants={itemVariant} className="mb-8 text-center relative">
+                <div className="absolute -top-[-2%] -left-10 rotate-[85deg]">
+                    <img src={vibe.sparkleImage} className="w-5 h-5" alt="" />
+                </div>
+                <div className="absolute -bottom-[2%] -right-8 rotate-[-65deg]">
+                    <img src={vibe.sparkleImage} className="w-5 h-5" alt="" />
+                </div>
+                <h1 className="font-accent text-6xl text-text-primary">Your Vibe <br /> </h1>
             </motion.div>
 
-            {/* Vibe Card */}
+            {/* Vibe Image */}
             <motion.div
                 variants={itemVariant}
-                className={`w-64 h-64 rounded-2xl flex items-center justify-center mb-6 shadow-sm ${vibe.bg}`}
+                className="w-48 h-48 flex items-center justify-center m-6"
             >
-                {/* Specific Icon Styling */}
-                {currentVibeKey === 'romantic' ? (
-                    <div className="relative">
-                        <Heart className="w-32 h-32 text-[#F4C2C2]" strokeWidth={1.5} />
-                        <Heart className="w-20 h-20 text-[#F4C2C2] absolute bottom-0 right-[-10px] fill-[#F4C2C2]/20" strokeWidth={1.5} />
-                    </div>
-                ) : (
-                    <vibe.icon className="w-32 h-32 opacity-80" style={{ color: vibe.color }} strokeWidth={1.5} />
-                )}
+                <img src={vibe.image} alt={vibe.label} className="w-full h-full object-contain" />
             </motion.div>
 
             {/* Vibe Text */}
             <motion.div variants={itemVariant} className="max-w-md text-center">
-                <p className="font-accent text-3xl mb-6" style={{ color: vibe.color }}>{vibe.label}</p>
+                <p className="font-accent text-4xl mb-6" style={{ color: vibe.color }}>{vibe.label}</p>
 
-                <h2 className="font-heading font-black text-4xl text-text-primary leading-tight tracking-tight relative inline-block">
-                    {vibe.description}
-                    {vibe.subIcon && (
-                        <vibe.subIcon className="inline-block ml-2 w-8 h-8 opacity-40 align-bottom" style={{ color: vibe.color }} />
-                    )}
+                <h2 className="font-heading font-black text-4xl text-text-primary leading-tight tracking-tight text-left relative inline-block">
+                    {description}
+                    {/* Vibe Icon */}
+                    <motion.div
+                        variants={itemVariant}
+                        className="absolute -top-6 -right-0 w-8 h-8 rotate-[20deg]"
+                    >
+                        <motion.img
+                            src={vibe.vibeIcon}
+                            alt={vibe.label}
+                            className="w-full h-full object-contain"
+                            animate={{
+                                rotate: [-5, 5, -5],
+                                scale: [1, 1.1, 1]
+                            }}
+                            transition={{
+                                duration: 3,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                        />
+                    </motion.div>
                 </h2>
             </motion.div>
 
 
             {/* Navigation Footer */}
             <motion.div
-                className="absolute bottom-12 w-full max-w-lg px-6 flex items-center justify-between"
+                className="relative w-full max-w-lg pt-6 flex items-center justify-between"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
@@ -147,7 +179,7 @@ export default function Slide6Vibe({ onNext, onPrev }: Slide6VibeProps) {
                     ))}
                 </div>
 
-                <button onClick={onNext} className="w-12 h-12 bg-text-primary rounded-full flex items-center justify-center text-[#FFFBF5] hover:scale-105 transition-transform shadow-lg">
+                <button onClick={onNext} className="w-18 h-14 bg-text-primary rounded-full flex items-center justify-center text-bg-primary hover:scale-105 transition-transform shadow-md">
                     <ArrowRight size={24} />
                 </button>
             </motion.div>

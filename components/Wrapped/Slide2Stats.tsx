@@ -87,7 +87,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
                                 animate={{ rotate: [-10, 10, -10] }}
                                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                             >
-                                <img src="/assets/slide2-play.svg" className="w-12 h-12" alt="" />
+                                <img src="/assets/slide2-play.svg" className="w-14 h-14" alt="" />
                             </motion.div>
                             <motion.div
                                 className="bg-stat-40 px-6 py-2 shadow-sm shadow-stat-40/50 flex items-center justify-between w-fit"
@@ -123,7 +123,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
                             animate={{ rotate: [-10, 10, -10] }}
                             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                         >
-                            <img src="/assets/slide2-clock.svg" className="w-12 h-12" alt="" />
+                            <img src="/assets/slide2-clock.svg" className="w-14 h-14" alt="" />
                         </motion.div>
                     </motion.div>
                 </motion.div>

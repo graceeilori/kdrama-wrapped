@@ -166,6 +166,7 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
                 {currentSlide === 6 && (
                     <Slide6Vibe
                         key="slide6"
+                        dramas={dramas}
                         onNext={handleNext}
                         onPrev={handlePrev}
                     />
