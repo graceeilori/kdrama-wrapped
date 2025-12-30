@@ -125,7 +125,7 @@ export default function Home() {
           <Image hidden src="/assets/circle-footer.svg" alt="" width={8} height={8} />
           <Link href="https://ko-fi.com/kdramawrapped" target="_blank" className="hover:text-black">Support Creator</Link>
           <Image src="/assets/circle-footer.svg" alt="" width={8} height={8} />
-          <Link href="#" className="hover:text-black">Report a Bug</Link>
+          <Link href="mailto:kdramawrapped@gmail.com" className="hover:text-black">Contact</Link>
         </div>
       </footer>
     </main>

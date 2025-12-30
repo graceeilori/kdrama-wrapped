@@ -72,7 +72,7 @@ export default function CreatePage() {
                             </div>
                         )}
 
-                        {/* Theme Selection*/}
+                        {/* Theme Selection - Disabled for now
                         {flowState === 'input' && (
                             <div className="mb-10 w-full rounded-2xl border-2 border-secondary-20 p-6 text-left">
                                 <div className="flex items-center gap-2 mb-2">
@@ -97,6 +97,7 @@ export default function CreatePage() {
                                 </div>
                             </div>
                         )}
+                        */}
 
                         <InputFlow
                             theme="daylight"

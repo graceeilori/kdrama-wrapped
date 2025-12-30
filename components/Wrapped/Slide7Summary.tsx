@@ -51,12 +51,10 @@ export default function Slide7Summary({ dramas, topDramas, stats, vibe, topGenre
                 useCORS: true,
                 allowTaint: true,
                 logging: true,
-                width: 1080,
-                height: 1920,
-                windowWidth: 1080, // Force desktop viewport simulation
-                windowHeight: 1920,
                 scrollX: 0,
                 scrollY: 0,
+                windowWidth: 1080,
+                windowHeight: 1920,
                 x: 0,
                 y: 0,
             });
@@ -80,15 +78,14 @@ export default function Slide7Summary({ dramas, topDramas, stats, vibe, topGenre
 
     return (
         <motion.div
-            className="w-full h-full flex flex-col items-center justify-center relative p-4 min-h-screen bg-[#FFFBF5] overflow-y-auto"
+            className="w-full h-full flex flex-col items-center justify-center relative bg-[#FFFBF5] overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         >
-            <div className="w-full max-w-sm flex flex-col items-center gap-2 mt-1 mb-12">
-
+            <div className="w-full max-w-md h-full flex flex-col items-center justify-between p-6 pb-12">
 
                 {/* Header */}
-                <div className="flex flex-col items-center justify-center w-full gap-1">
+                <div className="shrink-0 flex flex-col items-center justify-center w-full gap-1">
                     <Link href="/" className="font-heading font-black text-left w-full text-4xl text-text-primary hover:opacity-70 transition-opacity no-underline">
                         K
                     </Link>
@@ -97,8 +94,8 @@ export default function Slide7Summary({ dramas, topDramas, stats, vibe, topGenre
                     </div>
                 </div>
 
-                {/* THE CARD AREA */}
-                <div className="w-full relative flex justify-center items-center">
+                {/* THE CARD AREA - Flex 1 to take available space */}
+                <div className="flex-1 w-full relative flex justify-center items-center min-h-0 my-4">
 
                     {/* Hidden Capture Target (Behind content, correct viewport) */}
                     <div style={{ position: "absolute", top: 0, left: 0, width: "1080px", height: "1920px", zIndex: -50, opacity: 0, pointerEvents: "none" }}>
@@ -114,22 +111,33 @@ export default function Slide7Summary({ dramas, topDramas, stats, vibe, topGenre
 
                     {/* Preview Area */}
                     {!generatedImage ? (
-                        <div className="flex flex-col items-center justify-center h-72 w-full">
+                        <div className="flex flex-col items-center justify-center w-full">
                             <LoadingScreen step={0} customSteps={["Wrapping up your year..."]} />
                         </div>
                     ) : (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 0.9 }}
-                            className="relative shadow-md rounded-xl overflow-hidden border-2 border-text-primary w-[85%]"
+                            animate={{ opacity: 1, scale: 1 }}
+                            // Aspect ratio preservation is handled by object-contain, but we ensure max dimensions
+                            className="relative shadow-md rounded-xl overflow-hidden border-2 border-text-primary h-full max-h-full w-auto aspect-[9/16]"
                         >
-                            <img src={generatedImage} alt="Wrapped Summary" className="w-full h-auto object-contain" />
+                            <img src={generatedImage} alt="Wrapped Summary" className="w-full h-full object-contain bg-[#FFFBF5]" />
                         </motion.div>
                     )}
                 </div>
 
                 {/* Main Actions */}
-                <div className="flex flex-col w-full gap-2 px-4">
+                <div className="shrink-0 flex flex-col w-full gap-3">
+                    {/* Secondary Actions */}
+                    <div className="w-full grid grid-cols-2 gap-4 pt-2">
+                        <button onClick={onReplay} className="flex items-center justify-center gap-2 bg-[#FFFFFF] rounded-full text-text-primary font-medium hover:underline py-3 border border-stone-100">
+                            <RotateCcw size={16} /> Replay
+                        </button>
+                        <a href="https://ko-fi.com/kdramawrapped" target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#FFE5E5] text-text-primary py-3 flex items-center justify-center gap-2 font-medium hover:bg-[#FFD1D1] transition-colors">
+                            <Coffee size={18} /> Buy me coffee
+                        </a>
+                    </div>
+
                     {generatedImage && (
                         <>
                             <button
@@ -140,16 +148,6 @@ export default function Slide7Summary({ dramas, topDramas, stats, vibe, topGenre
                             </button>
                         </>
                     )}
-                </div>
-
-                {/* Secondary Actions */}
-                <div className="w-full grid grid-cols-2 gap-4 px-4 py-4">
-                    <button onClick={onReplay} className="flex items-center justify-center gap-2 bg-[#FFFFFF] rounded-full text-text-primary font-medium hover:underline py-3">
-                        <RotateCcw size={16} /> Replay
-                    </button>
-                    <a href="https://ko-fi.com/kdramawrapped" target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#FFE5E5] text-text-primary py-3 flex items-center justify-center gap-2 font-medium hover:bg-[#FFD1D1] transition-colors">
-                        <Coffee size={18} /> Buy me coffee
-                    </a>
                 </div>
 
             </div>

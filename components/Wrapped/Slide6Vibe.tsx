@@ -107,64 +107,66 @@ export default function Slide6Vibe({ dramas, onNext, onPrev }: Slide6VibeProps) 
 
     return (
         <motion.div
-            className="w-full h-full flex flex-col items-center justify-start relative px-6 pt-16 min-h-screen bg-bg-primary overflow-hidden"
+            className="w-full h-full flex flex-col items-center justify-between relative px-6 py-6 bg-bg-primary overflow-hidden no-scrollbar"
             variants={container}
             initial="hidden"
             animate="show"
             exit={{ opacity: 0 }}
         >
-            {/* Decorative Top Title */}
-            <motion.div variants={itemVariant} className="mb-8 text-center relative">
-                <div className="absolute -top-[-2%] -left-10 rotate-[85deg]">
-                    <img src={vibe.sparkleImage} className="w-5 h-5" alt="" />
-                </div>
-                <div className="absolute -bottom-[2%] -right-8 rotate-[-65deg]">
-                    <img src={vibe.sparkleImage} className="w-5 h-5" alt="" />
-                </div>
-                <h1 className="font-accent text-6xl text-text-primary">Your Vibe <br /> </h1>
-            </motion.div>
+            <div className="flex-1 w-full flex flex-col items-center justify-center shrink-0">
+                {/* Decorative Top Title */}
+                <motion.div variants={itemVariant} className="mb-4 text-center relative">
+                    <div className="absolute -top-[-2%] -left-10 rotate-[85deg]">
+                        <img src={vibe.sparkleImage} className="w-5 h-5" alt="" />
+                    </div>
+                    <div className="absolute -bottom-[2%] -right-8 rotate-[-65deg]">
+                        <img src={vibe.sparkleImage} className="w-5 h-5" alt="" />
+                    </div>
+                    <h1 className="font-accent text-6xl text-text-primary">Your Vibe <br /> </h1>
+                </motion.div>
 
-            {/* Vibe Image */}
-            <motion.div
-                variants={itemVariant}
-                className="w-48 h-48 flex items-center justify-center m-6"
-            >
-                <img src={vibe.image} alt={vibe.label} className="w-full h-full object-contain" />
-            </motion.div>
+                {/* Vibe Image */}
+                <motion.div
+                    variants={itemVariant}
+                    className="w-48 h-48 flex items-center justify-center m-6"
+                >
+                    <img src={vibe.image} alt={vibe.label} className="w-full h-full object-contain" />
+                </motion.div>
 
-            {/* Vibe Text */}
-            <motion.div variants={itemVariant} className="max-w-md text-center">
-                <p className="font-accent text-4xl mb-6" style={{ color: vibe.color }}>{vibe.label}</p>
+                {/* Vibe Text */}
+                <motion.div variants={itemVariant} className="max-w-md text-center">
+                    <p className="font-accent text-4xl mb-6" style={{ color: vibe.color }}>{vibe.label}</p>
 
-                <h2 className="font-heading font-black text-4xl text-text-primary leading-tight tracking-tight text-left relative inline-block">
-                    {description}
-                    {/* Vibe Icon */}
-                    <motion.div
-                        variants={itemVariant}
-                        className="absolute -top-6 -right-0 w-8 h-8 rotate-[20deg]"
-                    >
-                        <motion.img
-                            src={vibe.vibeIcon}
-                            alt={vibe.label}
-                            className="w-full h-full object-contain"
-                            animate={{
-                                rotate: [-5, 5, -5],
-                                scale: [1, 1.1, 1]
-                            }}
-                            transition={{
-                                duration: 3,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            }}
-                        />
-                    </motion.div>
-                </h2>
-            </motion.div>
+                    <h2 className="font-heading font-black text-4xl text-text-primary leading-tight tracking-tight text-left relative inline-block">
+                        {description}
+                        {/* Vibe Icon */}
+                        <motion.div
+                            variants={itemVariant}
+                            className="absolute -top-6 -right-0 w-8 h-8 rotate-[20deg]"
+                        >
+                            <motion.img
+                                src={vibe.vibeIcon}
+                                alt={vibe.label}
+                                className="w-full h-full object-contain"
+                                animate={{
+                                    rotate: [-5, 5, -5],
+                                    scale: [1, 1.1, 1]
+                                }}
+                                transition={{
+                                    duration: 3,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }}
+                            />
+                        </motion.div>
+                    </h2>
+                </motion.div>
+            </div>
 
 
             {/* Navigation Footer */}
             <motion.div
-                className="relative w-full max-w-lg pt-6 flex items-center justify-between"
+                className="relative shrink-0 w-full max-w-lg pt-4 flex items-center justify-between"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}

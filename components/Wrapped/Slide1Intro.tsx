@@ -8,7 +8,7 @@ interface Slide1IntroProps {
 
 export default function Slide1Intro({ onNext }: Slide1IntroProps) {
     return (
-        <div className="h-screen w-full flex flex-col items-center justify-center relative overflow-hidden no-scrollbar text-center">
+        <div className="h-full w-full flex flex-col items-center justify-center relative overflow-hidden no-scrollbar text-center">
             {/* Clapperboard Asset - Decoration */}
             <motion.div
                 className="absolute bottom-[37%] left-[32%] w-8 h-8 pointer-events-none"

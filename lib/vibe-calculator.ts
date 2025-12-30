@@ -50,6 +50,21 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
         }
     }
 
+    // Special Combo: Top 2 are Romance + Comedy -> Hopeless Romantic
+    const top2Genres = top3Genres.slice(0, 2);
+    if (top2Genres.includes("Romance") && top2Genres.includes("Comedy")) {
+        return "romantic";
+    }
+
+    // Special Logic: Romance #1, Thriller #2
+    if (top3Genres[0] === "Romance" && top3Genres[1] === "Thriller") {
+        if (top3Genres[2] === "Comedy") {
+            return "romantic";
+        } else {
+            return "detective";
+        }
+    }
+
     // 2. TIME TRAVELER - Historical dominant (>35% or top genre or in Top 3)
     const historicalPercent = genreCounts.get("Historical") || 0;
     if (topGenre.genre === "Historical" || top3Genres.includes("Historical") || (historicalPercent / totalGenres) * 100 > 35) {
@@ -58,7 +73,7 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
 
     // 4. HEALING SOUL - Slice of Life/Medical/Youth
 
-    // EXCLUSION: If "Thriller" is in top 3, never assign HEALING (per user request)
+    // EXCLUSION: If "Thriller" is in top 3, never assign HEALING
     if (!top3Genres.includes("Thriller")) {
         // Special Combo: Romance + Comedy + (Melodrama/Slice of Life) -> Healing
         if (top3Genres.includes("Romance") && (top3Genres.includes("Youth") || top3Genres.includes("Medical")) &&

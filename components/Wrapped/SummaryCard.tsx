@@ -86,12 +86,12 @@ const SummaryCard = forwardRef<HTMLDivElement, SummaryCardProps>(function Summar
             {/* Header */}
             <div className="w-full flex flex-col justify-between items-center mb-16 pt-12 px-8">
                 <h1 className="font-heading font-bold text-7xl mb-2">My 2025</h1>
-                <h2 className="font-heading font-bold text-6xl text-[rgba(32,28,36,0.8)] mb-2">K-Drama Wrapped</h2>
+                <h2 className="font-heading font-bold text-7xl text-[rgba(32,28,36,0.8)] mb-2">K-Drama Wrapped</h2>
             </div>
 
             {/* Vibe */}
-            <div className="flex flex-col items-center mb-20 relative">
-                <div className="relative w-120 h-120 mb-8">
+            <div className="flex flex-col items-center mb-18 relative">
+                <div className="relative w-120 h-120">
                     <img src={vibe.image} alt={vibe.label} className="w-full h-full object-contain relative z-10" />
                 </div>
                 <h3 className="font-accent text-7xl" style={{ color: vibe.color }}>{vibe.label}</h3>
@@ -99,7 +99,7 @@ const SummaryCard = forwardRef<HTMLDivElement, SummaryCardProps>(function Summar
 
             {/* Stats Bar */}
             <div className="w-full h-[176px] rounded-full mb-18" style={{ backgroundColor: vibe.bgColor }}>
-                <div className="w-full h-[176px] absolute top-[49.5%] left-0">
+                <div className="w-full h-[176px] absolute top-[48%] left-0">
                     <div className="absolute top-0 left-0 h-full w-1/3 flex flex-col items-center p-2 justify-center text-center gap-2">
                         <div className="font-heading font-bold text-7xl text-[#FFFFFF] mb-1 w-full text-center block">{stats.dramaCount}</div>
                         <div className="text-3xl font-semibold text-[#FFFFFF] w-full text-center block">Dramas</div>

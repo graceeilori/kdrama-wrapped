@@ -420,6 +420,7 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
                                     <br />• <span className="font-bold">Ratings:</span> Uploads with ratings will be processed but ratings will not be used.
                                     <br />• <span className="font-bold">Ongoing Dramas:</span> All episodes will be counted as if they are completed.
                                     <br />• <span className="font-bold">Multiple seasons:</span> Please add the specific season you watched for accuracy e.g. Weak Hero Season 2
+                                    <br />• <span className="font-bold">Accuracy:</span> Results generated might not be 100% accurate.
                                 </p>
                             </motion.div>
                         )}
