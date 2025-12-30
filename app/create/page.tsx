@@ -1,23 +1,64 @@
 'use client';
 import DeviceGuard from '@/components/DeviceGuard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Theme, themes } from '@/lib/themes';
-import InputFlow, { PageState } from '@/components/InputFlow';
+import WrappedFlow from '@/components/WrappedFlow';
+import { IdentifiedDrama, EnrichedDrama, enrichDramas } from '@/app/actions';
+import InputFlow, { PageState, LoadingScreen } from '@/components/InputFlow';
 import ThemeWrapper from '@/components/ThemeWrapper';
 import Image from 'next/image';
-import { Palette } from 'lucide-react';
+import { Palette, Loader2 } from 'lucide-react';
 
 export default function CreatePage() {
     // State to store the user's preferred theme for the FINAL wrapped result
     const [selectedTheme, setSelectedTheme] = useState<Theme>('daylight');
     const [flowState, setFlowState] = useState<PageState>('input');
+    const [wrappedData, setWrappedData] = useState<{ dramas: EnrichedDrama[]; topDramas: EnrichedDrama[] } | null>(null);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [loadingStep, setLoadingStep] = useState(0);
+
+    const GENERATION_STEPS = [
+        "Analyzing your watch list...",
+        "Creating your Wrapped..."
+    ];
+
+    useEffect(() => {
+        if (isGenerating) {
+            setLoadingStep(0);
+            const timer = setTimeout(() => {
+                setLoadingStep(1);
+            }, 2500);
+            return () => clearTimeout(timer);
+        }
+    }, [isGenerating]);
 
     return (
         <DeviceGuard>
             <ThemeWrapper theme="daylight">
                 <main className="min-h-screen w-full relative overflow-x-hidden bg-bg-primary text-text-primary">
+                    {/* Render Wrapped Flow if data exists */}
+                    {wrappedData && (
+                        <div className="fixed inset-0 z-50">
+                            <WrappedFlow
+                                dramas={wrappedData.dramas}
+                                topDramas={wrappedData.topDramas}
+                                onBack={() => {
+                                    setWrappedData(null);
+                                    setIsGenerating(false);
+                                }}
+                            />
+                        </div>
+                    )}
 
-                    <div className={`relative z-10 w-full max-w-4xl mx-auto px-5 py-12 flex flex-col items-center text-center ${flowState !== 'input' ? 'min-h-screen justify-center' : ''}`}>
+                    {/* Loading Screen */}
+                    {isGenerating && !wrappedData && (
+                        <div className="fixed inset-0 z-[60] bg-bg-primary flex items-center justify-center animate-in fade-in duration-300">
+                            <LoadingScreen step={loadingStep} customSteps={GENERATION_STEPS} />
+                        </div>
+                    )}
+
+                    {/* Input Flow - Keep mounted but hide when wrapped is showing */}
+                    <div className={`relative z-10 w-full max-w-4xl mx-auto px-5 py-12 flex flex-col items-center text-center ${flowState !== 'input' ? 'min-h-screen justify-center' : ''} ${wrappedData ? 'hidden' : ''}`}>
 
                         {/* Header */}
                         {flowState === 'input' && (
@@ -31,7 +72,7 @@ export default function CreatePage() {
                             </div>
                         )}
 
-                        {/* Theme Selection*/}
+                        {/* Theme Selection - Disabled for now
                         {flowState === 'input' && (
                             <div className="mb-10 w-full rounded-2xl border-2 border-secondary-20 p-6 text-left">
                                 <div className="flex items-center gap-2 mb-2">
@@ -56,15 +97,23 @@ export default function CreatePage() {
                                 </div>
                             </div>
                         )}
+                        */}
 
                         <InputFlow
                             theme="daylight"
                             onStateChange={setFlowState}
-                            onComplete={(dramas, topDramas) => {
-                                console.log("Generating with theme:", selectedTheme);
-                                console.log("Dramas:", dramas);
-                                console.log("Top 3:", topDramas);
-                                // TODO: Navigate to generation or handle data
+                            onComplete={async (dramas, topDramas) => {
+                                setIsGenerating(true);
+                                try {
+                                    // 1. Enrich ALL dramas
+                                    const enrichedDramas = await enrichDramas(dramas);
+                                    const enrichedTop = await enrichDramas(topDramas);
+
+                                    setWrappedData({ dramas: enrichedDramas, topDramas: enrichedTop });
+                                } catch (error) {
+                                    console.error("Failed to generate wrapped", error);
+                                    setIsGenerating(false);
+                                }
                             }}
                         />
 

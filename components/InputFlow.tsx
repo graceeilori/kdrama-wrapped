@@ -350,7 +350,7 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
                     <textarea
                         value={inputText}
                         onChange={handleTextChange}
-                        placeholder={`Paste your drama list here...\n\nFor example:\nMercy For None\nBon Appetit, Your Majesty\nTaxi Driver Season 3\n\nLearn more about accepted formats below.`}
+                        placeholder={`Paste your drama list here...\n\nFor example:\nMercy For None\nBon Appetit, Your Majesty\nOur Unwritten Seoul\nWeak Hero Season 2\n\nLearn more about accepted formats below.`}
                         className="w-full rounded-2xl p-6 font-sans text-[18px] resize-none focus:outline-none transition-all placeholder:text-text-primary/40 focus:ring-2 focus:ring-accent-10"
                         style={{
                             backgroundColor: colors.inputBg,
@@ -416,7 +416,11 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
                                     </div>
                                 </div>
                                 <p className="font-sans font-medium text-[14px] mt-6 text-left" style={{ color: colors.text, opacity: 0.8 }}>
-                                    <span className="font-bold">Note:</span> Uploads with ratings will be processed but ratings will not be used.
+                                    <span className="font-bold text-text-primary opacity-99">Important Notes:</span>
+                                    <br />• <span className="font-bold">Ratings:</span> Uploads with ratings will be processed but ratings will not be used.
+                                    <br />• <span className="font-bold">Ongoing Dramas:</span> All episodes will be counted as if they are completed.
+                                    <br />• <span className="font-bold">Multiple seasons:</span> Please add the specific season you watched for accuracy e.g. Weak Hero Season 2
+                                    <br />• <span className="font-bold">Accuracy:</span> Results generated might not be 100% accurate.
                                 </p>
                             </motion.div>
                         )}
@@ -446,18 +450,16 @@ export default function InputFlow({ onComplete, onStateChange, theme }: InputFlo
 }
 
 // Loading Screen Component
-function LoadingScreen({ step }: { step: number }) {
+export function LoadingScreen({ step, customSteps }: { step: number; customSteps?: string[] }) {
     const colors = {
         bg: "var(--bg-primary)",
         text: "var(--text-primary)",
         accent: "var(--accent-10)",
     };
 
-    const steps = [
+    const steps = customSteps || [
         "Parsing your list...",
         "Finding your dramas...",
-        "Calculating insights...",
-        "Creating your Wrapped..."
     ];
 
     const progress = ((step + 1) / steps.length) * 100;

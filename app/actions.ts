@@ -1,6 +1,6 @@
 "use server";
 
-import { searchSeries, getPosterUrl, getSeasonDetails, TMDBSeries } from "@/lib/tmdb";
+import { searchSeries, getPosterUrl, getSeasonDetails, getSeriesDetails, TMDBSeries } from "@/lib/tmdb";
 
 export interface IdentifiedDrama {
     input: string;
@@ -9,8 +9,18 @@ export interface IdentifiedDrama {
     title?: string;
     posterUrl?: string | null;
     year?: string;
-    isUncertain?: boolean; // If fuzzy match or simple check
-    suggestion?: string; // The suggested title if found=false but bestMatch exists
+    isUncertain?: boolean;
+    suggestion?: string;
+    selectedSeason?: number | null;
+}
+
+export interface EnrichedDrama extends IdentifiedDrama {
+    episodeCount?: number;
+    runtime?: number; // average runtime in minutes
+    totalRuntime?: number; // total minutes (eps * runtime)
+    genres?: string[];
+    keywords?: string[];
+    cast?: { id: number; name: string; profilePath: string | null }[];
 }
 
 export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[]> {
@@ -33,9 +43,24 @@ export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[
 
             const searchResults = await searchSeries(query);
 
-            // Sort by year descending (2025 -> 2024 -> ...)
-            // Prioritize recent releases as requested
+            // Normalization helper: lowercase + remove all non-alphanumeric chars
+            const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+            const normalizedQuery = normalize(query);
+
+            // Sort results:
+            // 1. Exact Title Match (Highest Priority)
+            // 2. Recent Release Date (Secondary Priority)
             searchResults.sort((a, b) => {
+                const nameA = normalize(a.name);
+                const nameB = normalize(b.name);
+
+                const exactA = nameA === normalizedQuery;
+                const exactB = nameB === normalizedQuery;
+
+                if (exactA && !exactB) return -1; // A comes first
+                if (!exactA && exactB) return 1;  // B comes first
+
+                // If both are exact or both are NOT exact, sort by newest date
                 const dateA = a.first_air_date || "0000";
                 const dateB = b.first_air_date || "0000";
                 return dateB.localeCompare(dateA);
@@ -44,11 +69,8 @@ export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[
             const bestMatch = searchResults.length > 0 ? searchResults[0] : null;
 
             if (bestMatch) {
-                // Normalization helper: lowercase + remove all non-alphanumeric chars (punctuation/spaces)
-                const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
-
                 // Compare cleaned query (e.g. "squidgame") with result ("squidgame")
-                const normalizedInput = normalize(query);
+                const normalizedInput = normalizedQuery;
                 const normalizedMatch = normalize(bestMatch.name);
 
                 // Check if it's an exact match (ignoring case & punctuation)
@@ -77,7 +99,8 @@ export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[
                         title: bestMatch.name,
                         posterUrl: finalPoster,
                         year: bestMatch.first_air_date ? bestMatch.first_air_date.substring(0, 4) : undefined,
-                        isUncertain: false
+                        isUncertain: false,
+                        selectedSeason: targetSeason
                     };
                 } else {
                     // It's a suggestion (found=false so it goes to "Uncertain" list, but data is there)
@@ -90,6 +113,8 @@ export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[
                         year: bestMatch.first_air_date ? bestMatch.first_air_date.substring(0, 4) : undefined,
                         isUncertain: true,
                         suggestion: bestMatch.name
+                        // Don't pass selectedSeason for suggestions to keep it simple, or maybe we should?
+                        // For now, only exact matches get season logic applied automatically.
                     };
                 }
             }
@@ -102,4 +127,59 @@ export async function identifyDramas(titles: string[]): Promise<IdentifiedDrama[
     );
 
     return results;
+}
+
+export async function enrichDramas(dramas: IdentifiedDrama[]): Promise<EnrichedDrama[]> {
+    const enriched = await Promise.all(
+        dramas.map(async (drama) => {
+            if (!drama.found || !drama.tmdbId) {
+                return drama as EnrichedDrama;
+            }
+
+            // Always fetch series details for genres/keywords/default runtime
+            const seriesDetails = await getSeriesDetails(drama.tmdbId);
+            if (!seriesDetails) return drama as EnrichedDrama;
+
+            // Calculate base runtime (series average)
+            let avgRuntime = 60;
+            if (seriesDetails.episode_run_time && seriesDetails.episode_run_time.length > 0) {
+                const sum = seriesDetails.episode_run_time.reduce((a, b) => a + b, 0);
+                avgRuntime = Math.round(sum / seriesDetails.episode_run_time.length);
+            }
+
+            let finalEpisodeCount = seriesDetails.number_of_episodes || 0;
+            let finalRuntime = avgRuntime;
+
+            // If a specific season was selected, try to get specific stats
+            if (drama.selectedSeason) {
+                try {
+                    const seasonDetails = await getSeasonDetails(drama.tmdbId, drama.selectedSeason);
+                    if (seasonDetails && seasonDetails.episodes) {
+                        finalEpisodeCount = seasonDetails.episodes.length;
+                        // We could recalculate runtime if season episodes have specific runtimes, 
+                        // but average series runtime is usually a safe enough proxy unless we want to sum up exact minutes.
+                        // Let's stick to series avg runtime * season episode count for consistency unless season has 0 eps.
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch season stats", e);
+                }
+            }
+
+            return {
+                ...drama,
+                episodeCount: finalEpisodeCount,
+                runtime: finalRuntime,
+                totalRuntime: finalEpisodeCount * finalRuntime,
+                genres: seriesDetails.genres?.map(g => g.name) || [],
+                keywords: seriesDetails.keywords?.results?.map(k => k.name) || [],
+                cast: seriesDetails.credits?.cast?.slice(0, 15).map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    profilePath: getPosterUrl(c.profile_path)
+                })) || []
+            };
+        })
+    );
+
+    return enriched;
 }
