@@ -65,12 +65,7 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
         }
     }
 
-    // 1. WANDERER - Diverse mix (8+ genres, no single dominant)
-    // Boost for high volume watchers (>30 dramas)
-    const wandererPercentageCap = dramas.length > 30 ? 45 : 35;
-    if (uniqueGenres >= 5 && topGenre.percentage < wandererPercentageCap) {
-        return "wanderer";
-    }
+
 
     // 2. TIME TRAVELER - Historical dominant (>35% or top genre or in Top 3)
     const historicalPercent = genreCounts.get("Historical") || 0;
@@ -130,6 +125,13 @@ export function calculateVibe(dramas: EnrichedDrama[]): VibeType {
 
     if (romanticPercent > 25 || topGenre.genre === "Romance") {
         return "romantic";
+    }
+
+    // 1. WANDERER - Diverse mix (8+ genres, no single dominant)
+    // Boost for high volume watchers (>30 dramas)
+    const wandererPercentageCap = dramas.length > 30 ? 40 : 35;
+    if (uniqueGenres >= 9 && topGenre.percentage < wandererPercentageCap) {
+        return "wanderer";
     }
 
     // Final fallback
