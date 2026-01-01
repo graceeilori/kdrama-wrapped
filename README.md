@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# K-Drama Wrapped 2025 🎬
 
-## Getting Started
+An interactive year-in-review experience for K-Drama enthusiasts. Enter your watched list, and get a personalized "Wrapped" story with stats, top genres, and your unique viewing "Vibe". Inspired by Spotify Wrapped.
 
-First, run the development server:
+## Features 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* **Smart Title Recognition**: Fuzzy matching algorithm handles typos, alternative titles, and formatting variations
+* **TMDB Integration**: Automatically fetches comprehensive show metadata including genres, ratings, and poster images
+* **Vibe Algorithm**: Custom genre weighting system that analyzes viewing patterns to determine personality archetypes
+* **Interactive Results**: Swipe/tap through your personalized statistics with smooth animations
+* **Shareable Graphics**: Generate and download your wrapped summary as an image
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies & Architecture 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Frontend Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+* **Next.js 14 (App Router)**: React framework with server components
+* **TypeScript**: Development
+* **Tailwind CSS**: Styling
+* **Framer Motion**: Animations and gesture handling
 
-## Learn More
+### Data & APIs
+* **TMDB API**: Drama metadata and genre information (https://www.themoviedb.org/documentation/api)
+* **Server Actions**: Secure API proxying and data processing
+* **html2canvas**: Client-side image generation for sharing
 
-To learn more about Next.js, take a look at the following resources:
+### Deployment & Analytics
+* **Vercel**: Edge network deployment for optimal performance
+* **Vercel Analytics**: User engagement and interaction tracking
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Try it out!
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Experience your own K-Drama Wrapped at [kdramawrapped.com](https://kdramawrapped.com).
