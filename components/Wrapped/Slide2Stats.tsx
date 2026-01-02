@@ -42,7 +42,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
                         <img src="/assets/slide2-celebrate.svg" className="w-6 h-6" alt="" />
                     </div>
 
-                    <h1 className="font-accent text-6xl text-text-primary">This Year... <br /> </h1>
+                    <h1 className="font-accent text-5xl md:text-6xl text-text-primary mt-4">This Year... <br /> </h1>
 
                     <div className="absolute -bottom-6 -left-4 opacity-70 rotate-12">
                         <img src="/assets/slide2-celebrate.svg" className="w-5 h-5" alt="" />
@@ -61,7 +61,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
                                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
                             >
                                 <div className="flex items-center gap-2">
-                                    <span className="font-heading font-black text-8xl text-text-primary">{dramaCount}</span>
+                                    <span className="font-heading font-black text-6xl md:text-8xl text-text-primary">{dramaCount}</span>
                                     <span className="font-sans font-semibold text-3xl text-text-primary">Dramas</span>
                                 </div>
                             </motion.div>
@@ -96,7 +96,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
                                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                                 >
                                     <div className="flex items-center gap-2">
-                                        <span className="font-heading font-black text-8xl text-text-primary">{episodeCount}</span>
+                                        <span className="font-heading font-black text-6xl md:text-8xl text-text-primary">{episodeCount}</span>
                                         <span className="font-sans font-semibold text-3xl text-text-primary">Episodes</span>
                                     </div>
                                 </motion.div>
@@ -114,7 +114,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
                                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
                             >
                                 <div className="flex items-center gap-2">
-                                    <span className="font-heading font-black text-8xl text-text-primary">{totalHours}</span>
+                                    <span className="font-heading font-black text-6xl md:text-8xl text-text-primary">{totalHours}</span>
                                     <span className="font-sans font-semibold text-3xl text-text-primary">Hours</span>
                                 </div>
                             </motion.div>
@@ -133,7 +133,7 @@ export default function Slide2Stats({ dramaCount, episodeCount, totalHours, onNe
 
             {/* Navigation Footer */}
             <motion.div
-                className="relative shrink-0 w-full max-w-lg pt-4 flex items-center justify-between"
+                className="relative shrink-0 w-full max-w-lg pt-4 pb-[env(safe-area-inset-bottom,20px)] flex items-center justify-between z-50"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}

@@ -150,7 +150,7 @@ export default function Slide4TopDramas({ topDramas, onNext, onPrev }: Slide4Top
 
             {/* Navigation Footer */}
             <motion.div
-                className="relative shrink-0 w-full max-w-lg pt-4 flex items-center justify-between"
+                className="relative shrink-0 w-full max-w-lg pt-4 pb-[env(safe-area-inset-bottom,20px)] flex items-center justify-between z-50"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}

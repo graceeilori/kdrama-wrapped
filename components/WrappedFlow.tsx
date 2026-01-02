@@ -134,7 +134,7 @@ export default function WrappedFlow({ dramas, topDramas, onBack }: WrappedFlowPr
 
     return (
         <div
-            className="w-full h-full min-h-screen bg-[#FFFBF5] text-text-primary overflow-hidden relative"
+            className="w-full h-[100dvh] bg-[#FFFBF5] text-text-primary overflow-hidden relative touch-pan-y"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
