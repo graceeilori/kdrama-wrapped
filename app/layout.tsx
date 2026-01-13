@@ -25,6 +25,9 @@ const reenie = Reenie_Beanie({
 export const metadata = {
   title: 'K-Drama Wrapped',
   description: 'Your K-Drama year in review',
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
