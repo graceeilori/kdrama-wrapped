@@ -22,7 +22,6 @@ An interactive year-in-review experience for K-Drama enthusiasts. Enter your wat
 ### Data & APIs
 * **TMDB API**: Drama metadata and genre information (https://www.themoviedb.org/documentation/api)
 * **Server Actions**: Secure API proxying and data processing
-* **html2canvas**: Client-side image generation for sharing
 
 ### Deployment & Analytics
 * **Vercel**: Edge network deployment for optimal performance
