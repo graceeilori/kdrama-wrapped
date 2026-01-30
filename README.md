@@ -1,4 +1,4 @@
-# K-Drama Wrapped 2025 🎬
+# K-Drama Wrapped 2025
 
 An interactive year-in-review experience for K-Drama enthusiasts. Enter your watched list, and get a personalized "Wrapped" story with stats, top genres, and your unique viewing "Vibe". Inspired by Spotify Wrapped.
 
